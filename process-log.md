@@ -250,3 +250,11 @@
 **Made:** Browsers treat a clicked text field or select as "focus-visible", so they showed the ring on click. A small `InputModality` component now records on `<html data-modality>` whether the last navigation was Tab or a pointer. Text fields and selects show the focus ring only after Tab; on click they just darken their border. Only Tab counts as keyboard navigation, so typing a search doesn't bring the ring back. Buttons already skipped the ring on click.
 
 **Verified in Chrome:** clicking and typing show no ring, Tabbing in shows the 2px ring, and the keyboard focus sweep still finds a ring on every Tab stop.
+
+## 2026-10-13: Hub button back on the left
+
+**Asked:** Keep "← Hub" on the left: above the title on phones, and to the left of the title on wider screens.
+
+**Made:** On phones the hub button sits above the title on the left. From tablet width up it sits to the left of "食譜 Recipe Book", vertically centered on the title's first line (measured: 70px vs 69px at 1440, 68px vs 64px at 768).
+
+**Pushed back:** I preferred the hub button on the left over the agent's top-right placement.
