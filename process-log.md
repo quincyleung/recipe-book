@@ -95,3 +95,23 @@
 **Made:** Dropped Geist. Body text now uses Noto Serif TC (weight 400), so Oswald does the signage (display, headings, labels, buttons) and Noto Serif TC does reading text and Chinese characters. The change applies to both the mood board and the design system. Oswald now falls back to Noto Serif TC for Chinese characters; before this, the bilingual swatch names were silently drawn in the system font (PingFang). Checked in Chrome that both pages render with only Oswald and Noto Serif TC.
 
 **Pushed back:** I asked for fewer fonts in Old Hong Kong.
+
+## 2026-10-13: Choosing a style
+
+**Asked:** Which style should I build? I like Greek Summer and Parisian Morning most for their looks, but Old Hong Kong feels the most creative. Is Noto Serif TC the best body font?
+
+**Decided:** Old Hong Kong. Most of my dishes are Cantonese or Asian home cooking, "read it like a menu" suits cooking from a phone, and it's the most distinct from a default look. The agent recommended it too, with the risk that it gets busy, so neon and patterns stay as accents. I kept Noto Serif TC: with two fonts, it is the one that covers both English body text and Chinese, and its Ming-style serif matches old printed menus.
+
+## 2026-10-13: The recipe site
+
+**Asked:** Build `/recipes` in Old Hong Kong using the design system: clear hierarchy with the recipe name first, the accent only for the primary action, every control in its states, working at 390px and 1440px, and linked from the hub.
+
+**Made:**
+- **List:** a modest page title, then a search over names and ingredients, and bilingual meal chips (全部 All, 早餐 Breakfast, 晚餐 Dinner). Recipe cards lead with the dish name, then meal, time, and servings, then a short ingredient list and a "Make ahead" badge. Cards on the site have no art block, because the same pattern on every card added nothing. Searching for something missing shows the design system's empty state with "Clear filters".
+- **Recipe sheet:** a full-screen sheet on phones and a side panel on desktop. The name comes first in the display style. Ingredients (amounts in Oswald, items in Noto Serif TC) and steps are on one scroll. "Start cooking" highlights step 1, and a bar fixed to the bottom of the screen takes over with Previous, "Step 2 of 5", and Next step, then Finish and a success line.
+- **Accent only for the primary action:** the list page has no accent buttons, and the sheet shows exactly one at a time ("Start cooking", then "Next step").
+- The open recipe is in the URL hash, so the phone's back button closes it and recipes can be linked directly. "Keep screen awake" uses the browser's Wake Lock feature where it's supported; nothing is saved.
+- All controls come from the design system, so each has its hover, focus, pressed, selected, and disabled states.
+- The hub says the site is built in the Old Hong Kong style.
+- **Verified in Chrome** at 1440px and 390px, with no horizontal overflow and no console errors: search, filters, the empty state and clearing it, opening a recipe, the cooking flow through Finish, the toggle, the checklist, the back button (no page reload), a direct link, and Esc.
+- **Bug found and fixed:** the sheet is reused, so after cooking one recipe to the end, the next one opened scrolled down with its name off-screen. It now resets to the top for every recipe.

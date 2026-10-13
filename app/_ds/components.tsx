@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode, type Ref } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode, type Ref } from "react";
 import type { Recipe } from "@/content/recipes";
 
 /** Forces a visual state for the control-states table. */
@@ -84,11 +84,15 @@ function FieldLabel({ children }: { children: ReactNode }) {
 export function TextField({
   label,
   placeholder,
+  value,
+  onChange,
   force,
   disabled,
 }: {
   label: string;
   placeholder: string;
+  value?: string;
+  onChange?: (value: string) => void;
   force?: Force;
   disabled?: boolean;
 }) {
@@ -98,6 +102,8 @@ export function TextField({
       <input
         type="search"
         placeholder={placeholder}
+        value={value}
+        onChange={onChange && ((event) => onChange(event.target.value))}
         data-force={force}
         disabled={disabled}
         className={`${field} placeholder:text-(--ds-muted) ${focusRing}`}
@@ -214,14 +220,25 @@ export function Radio({
   );
 }
 
-export function Toggle({ label, defaultOn = false }: { label: string; defaultOn?: boolean }) {
+export function Toggle({
+  label,
+  defaultOn = false,
+  onChange,
+}: {
+  label: string;
+  defaultOn?: boolean;
+  onChange?: (on: boolean) => void;
+}) {
   const [on, setOn] = useState(defaultOn);
   return (
     <button
       type="button"
       role="switch"
       aria-checked={on}
-      onClick={() => setOn(!on)}
+      onClick={() => {
+        setOn(!on);
+        onChange?.(!on);
+      }}
       className={`group ds-body inline-flex min-h-11 items-center gap-3 text-left text-(--ds-text) ${focusRing}`}
     >
       <span className="relative h-7 w-12 shrink-0 rounded-(--ds-radius-toggle) border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) transition-colors group-aria-checked:border-(--ds-check) group-aria-checked:bg-(--ds-check)">
@@ -379,20 +396,42 @@ function meta(recipe: Recipe) {
   return `${recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · ${recipe.minutes} min · Serves ${recipe.servings}`;
 }
 
-export function RecipeCard({ recipe, force, onOpen }: { recipe: Recipe; force?: Force; onOpen?: () => void }) {
+function summary(recipe: Recipe) {
+  const items = recipe.ingredients.map((ingredient) => ingredient.item.split(",")[0]);
+  return items.length > 3 ? `${items.slice(0, 3).join(", ")} + ${items.length - 3} more` : items.join(", ");
+}
+
+export function RecipeCard({
+  recipe,
+  force,
+  onOpen,
+  art = true,
+  showSummary = false,
+}: {
+  recipe: Recipe;
+  force?: Force;
+  onOpen?: () => void;
+  /** The style's texture where a photo would go. */
+  art?: boolean;
+  /** A short list of the main ingredients. */
+  showSummary?: boolean;
+}) {
   return (
     <article
       data-force={force}
       className="relative flex flex-col gap-3 rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface) p-3 shadow-(--ds-shadow-card) transition-[border-color,translate,scale] ds-hover:border-(--ds-control) ds-pressed:scale-(--ds-press-scale) has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--ds-focus) data-[force=focus]:outline-2 data-[force=focus]:outline-offset-2 data-[force=focus]:outline-(--ds-focus)"
     >
-      <div aria-hidden className="aspect-[4/3] rounded-(--ds-radius-field)" style={{ background: "var(--ds-art)" }} />
+      {art && (
+        <div aria-hidden className="aspect-[4/3] rounded-(--ds-radius-field)" style={{ background: "var(--ds-art)" }} />
+      )}
       <div className="flex flex-col gap-1 px-1 pb-1">
-        <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
         <h3 className="ds-title text-(--ds-text)">
           <button type="button" onClick={onOpen} className="text-left outline-none after:absolute after:inset-0">
             {recipe.name}
           </button>
         </h3>
+        <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
+        {showSummary && <p className="ds-body text-(--ds-muted)">{summary(recipe)}</p>}
         {recipe.aheadNote && (
           <div className="pt-1">
             <Badge>Make ahead</Badge>
@@ -456,8 +495,8 @@ function RecipeDetail({ recipe, titleId, onClose }: { recipe: Recipe; titleId: s
       </div>
       <ul className="ds-body flex flex-col gap-1 text-(--ds-text)">
         {recipe.ingredients.map((ingredient) => (
-          <li key={ingredient.item} className="flex gap-3">
-            <span className="w-20 shrink-0 text-(--ds-muted)">{ingredient.amount}</span>
+          <li key={ingredient.item} className="flex items-baseline gap-3">
+            <span className="ds-control w-24 shrink-0 text-(--ds-muted)">{ingredient.amount}</span>
             {ingredient.item}
           </li>
         ))}
@@ -509,13 +548,13 @@ export function RecipeModal({ recipe }: { recipe: Recipe }) {
 
 /* Cooking */
 
-export function IngredientChecklist({ recipe }: { recipe: Recipe }) {
+export function IngredientChecklist({ recipe, title = "Ingredients" }: { recipe: Recipe; title?: ReactNode }) {
   const [done, setDone] = useState<boolean[]>(() => recipe.ingredients.map(() => false));
   const ready = done.filter(Boolean).length;
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-baseline justify-between gap-4">
-        <h3 className="ds-title text-(--ds-text)">Ingredients</h3>
+        <h3 className="ds-title text-(--ds-text)">{title}</h3>
         <p className="ds-label text-(--ds-muted)" aria-live="polite">
           {ready} of {recipe.ingredients.length} ready
         </p>
@@ -529,7 +568,7 @@ export function IngredientChecklist({ recipe }: { recipe: Recipe }) {
               onChange={(checked) => setDone(done.map((d, j) => (j === i ? checked : d)))}
               label={
                 <>
-                  <span className="font-semibold">{ingredient.amount}</span> {ingredient.item}
+                  <span className="ds-control">{ingredient.amount}</span> {ingredient.item}
                 </>
               }
             />
@@ -540,22 +579,52 @@ export function IngredientChecklist({ recipe }: { recipe: Recipe }) {
   );
 }
 
-export function StepList({ recipe }: { recipe: Recipe }) {
-  const [current, setCurrent] = useState(0);
+export function StepList({
+  recipe,
+  title = "Steps",
+  current: controlled,
+  onCurrentChange,
+  controls = true,
+}: {
+  recipe: Recipe;
+  title?: ReactNode;
+  /** Pass to control it from outside; null means no step is current yet. */
+  current?: number | null;
+  onCurrentChange?: (step: number) => void;
+  /** Show Previous and Next under the list. */
+  controls?: boolean;
+}) {
+  const [own, setOwn] = useState(0);
+  const current = controlled === undefined ? own : controlled;
+  const setCurrent = onCurrentChange ?? setOwn;
   const last = recipe.steps.length - 1;
+  const items = useRef<(HTMLLIElement | null)[]>([]);
+
+  // Keep the current step in view while cooking.
+  useEffect(() => {
+    if (controlled === undefined || controlled === null) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    items.current[controlled]?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+  }, [controlled]);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-baseline justify-between gap-4">
-        <h3 className="ds-title text-(--ds-text)">Steps</h3>
+        <h3 className="ds-title text-(--ds-text)">{title}</h3>
         <p className="ds-label text-(--ds-muted)" aria-live="polite">
-          Step {current + 1} of {recipe.steps.length}
+          {current === null ? `${recipe.steps.length} steps` : `Step ${current + 1} of ${recipe.steps.length}`}
         </p>
       </div>
       <ol className="flex flex-col gap-1">
         {recipe.steps.map((step, i) => {
-          const state = i < current ? "done" : i === current ? "current" : "next";
+          const state = current === null ? "next" : i < current ? "done" : i === current ? "current" : "next";
           return (
-            <li key={step}>
+            <li
+              key={step}
+              ref={(el) => {
+                items.current[i] = el;
+              }}
+            >
               <button
                 type="button"
                 aria-current={state === "current" ? "step" : undefined}
@@ -583,14 +652,29 @@ export function StepList({ recipe }: { recipe: Recipe }) {
           );
         })}
       </ol>
-      <div className="flex flex-wrap gap-3">
-        <Button variant="secondary" disabled={current === 0} onClick={() => setCurrent(current - 1)}>
-          Previous
-        </Button>
-        <Button disabled={current === last} onClick={() => setCurrent(current + 1)}>
-          Next step
-        </Button>
-      </div>
+      {controls && current !== null && (
+        <div className="flex flex-wrap gap-3">
+          <Button variant="secondary" disabled={current === 0} onClick={() => setCurrent(current - 1)}>
+            Previous
+          </Button>
+          <Button disabled={current === last} onClick={() => setCurrent(current + 1)}>
+            Next step
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* UI states */
+
+export function EmptyState({ title, body, action }: { title: string; body: string; action?: ReactNode }) {
+  return (
+    <div className="flex flex-col items-center gap-3 text-center">
+      <span aria-hidden className="size-10 rounded-full border-2 border-dashed border-(--ds-control)" />
+      <p className="ds-title text-(--ds-text)">{title}</p>
+      <p className="ds-body text-(--ds-muted)">{body}</p>
+      {action}
     </div>
   );
 }

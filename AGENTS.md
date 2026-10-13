@@ -28,7 +28,7 @@ Me, cooking on weeknights with my phone on the counter. I want the ingredients a
 - `/`: the hub (mood boards, design systems, the site)
 - `/mood-boards/[style]`
 - `/design-systems/[style]`
-- `/recipes`: the site, in the style I pick
+- `/recipes`: the site, in the Old Hong Kong style (`app/recipes/page.tsx` sets the theme)
 
 ## Styles
 

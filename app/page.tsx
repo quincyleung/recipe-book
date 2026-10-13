@@ -74,7 +74,10 @@ export default function Hub() {
       </section>
 
       <section className="flex flex-col gap-4 border-t border-zinc-200 pt-10 sm:flex-row sm:items-center sm:justify-between">
-        <SectionLabel number={3}>Your site</SectionLabel>
+        <div className="flex flex-col gap-2">
+          <SectionLabel number={3}>Your site</SectionLabel>
+          <p className="text-sm text-zinc-600">Built in the Old Hong Kong style.</p>
+        </div>
         <Link
           href="/recipes"
           className="rounded-full bg-zinc-900 px-6 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 active:bg-black"

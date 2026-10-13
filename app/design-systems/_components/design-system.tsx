@@ -6,6 +6,7 @@ import {
   Chip,
   ChipGroup,
   DetailPanel,
+  EmptyState,
   IngredientChecklist,
   ListRows,
   Radio,
@@ -465,10 +466,11 @@ export function DesignSystem({
         <Section number={6} title="UI states">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StateCard label="Empty">
-              <span aria-hidden className="size-10 rounded-full border-2 border-dashed border-(--ds-control)" />
-              <p className="ds-title">No recipes match “tofu”</p>
-              <p className="ds-body text-(--ds-muted)">Try another ingredient, or clear the filters.</p>
-              <Button variant="secondary">Clear filters</Button>
+              <EmptyState
+                title="No recipes match “tofu”"
+                body="Try another ingredient, or clear the filters."
+                action={<Button variant="secondary">Clear filters</Button>}
+              />
             </StateCard>
             <StateCard label="Loading">
               <div role="status" className="flex flex-col items-center gap-3">
