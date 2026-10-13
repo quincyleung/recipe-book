@@ -67,7 +67,7 @@ const roleSamples: { role: "display" | "heading" | "title" | "body" | "label" | 
   { role: "heading", name: "Heading", sample: "Ingredients" },
   { role: "title", name: "Title", sample: "Beef Enoki Rolls" },
   { role: "body", name: "Body", sample: "Sear skin side down over medium-high for four minutes. Flip and cook two more." },
-  { role: "label", name: "Label", sample: "Dinner · 15 min · Serves 2" },
+  { role: "label", name: "Label", sample: "Dinner · 20 min · Serves 2" },
   { role: "control", name: "Control", sample: "Start cooking" },
 ];
 
@@ -347,7 +347,7 @@ export function DesignSystem({
               <ChipGroup label="Filter recipes" options={["All", "Breakfast", "Dinner", "Fish", "Beef"]} />
               <div className="flex flex-wrap gap-2">
                 <Badge>Make ahead</Badge>
-                <Badge tone="neutral">15 min</Badge>
+                <Badge tone="neutral">20 min</Badge>
               </div>
             </Group>
             <Group title="Tabs">
@@ -358,7 +358,7 @@ export function DesignSystem({
                     label: "Ingredients",
                     content: <p className="ds-body">Six ingredients, most already in the pantry.</p>,
                   },
-                  { label: "Steps", content: <p className="ds-body">Five steps, about fifteen minutes.</p> },
+                  { label: "Steps", content: <p className="ds-body">Five steps, about twenty minutes.</p> },
                   { label: "Notes", content: <p className="ds-body">Pat the salmon dry so the skin crisps.</p> },
                 ]}
               />

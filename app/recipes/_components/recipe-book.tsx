@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import {
   Button,
   Checkbox,
@@ -22,8 +22,8 @@ const meals: { value: Meal | "all"; label: string }[] = [
 ];
 const times = [
   { value: "any", label: "Any time", max: Infinity },
+  { value: "30", label: "30 min or less", max: 30 },
   { value: "15", label: "15 min or less", max: 15 },
-  { value: "10", label: "10 min or less", max: 10 },
 ];
 const preps = [
   { value: "any", label: "Any" },
@@ -54,7 +54,7 @@ function FilterGroup({ legend, children }: { legend: string; children: ReactNode
 }
 
 export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
-  const proteins = [...new Set(recipes.map((recipe) => recipe.protein))];
+  const proteins = [...new Set(recipes.flatMap((recipe) => recipe.proteins))];
   const [query, setQuery] = useState("");
   const [meal, setMeal] = useState<Meal | "all">("all");
   const [picked, setPicked] = useState<string[]>([]);
@@ -63,6 +63,7 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
   const [sort, setSort] = useState(sorts[0]);
   const [view, setView] = useState<"cards" | "list">("cards");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const resultsHeading = useRef<HTMLHeadingElement>(null);
 
   const maxMinutes = times.find((t) => t.value === time)!.max;
   const activeFilters = (meal === "all" ? 0 : 1) + picked.length + (time === "any" ? 0 : 1) + (prep === "any" ? 0 : 1);
@@ -70,12 +71,21 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
     .filter(
       (recipe) =>
         (meal === "all" || recipe.meal === meal) &&
-        (picked.length === 0 || picked.includes(recipe.protein)) &&
+        (picked.length === 0 || recipe.proteins.some((p) => picked.includes(p))) &&
         recipe.minutes <= maxMinutes &&
         (prep === "any" || (prep === "ahead") === Boolean(recipe.aheadNote)) &&
         matches(recipe, query),
     )
     .sort(sorters[sort]);
+
+  // On phones the panel sits above the results; close it and take you to them.
+  function showResults() {
+    setFiltersOpen(false);
+    requestAnimationFrame(() => {
+      resultsHeading.current?.focus({ preventScroll: true });
+      resultsHeading.current?.scrollIntoView({ block: "start" });
+    });
+  }
 
   function clearFilters() {
     setQuery("");
@@ -86,7 +96,8 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-x-10">
+    <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-10">
+      {/* auto/1fr rows: when the sidebar is taller, only the results row grows, so results stay at the top. */}
       <div className="flex flex-col gap-4 lg:col-start-2">
         <TextField label="Search recipes or ingredients" placeholder="Salmon, eggs, oats…" value={query} onChange={setQuery} />
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -155,17 +166,22 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
             <Radio key={p.value} name="prep" label={p.label} checked={prep === p.value} onChange={() => setPrep(p.value)} />
           ))}
         </FilterGroup>
-        {activeFilters > 0 && (
-          <div>
+        <div className="flex flex-wrap gap-3">
+          <span className="lg:hidden">
+            <Button variant="secondary" onClick={showResults}>
+              {shown.length === 1 ? "Show 1 recipe" : `Show ${shown.length} recipes`}
+            </Button>
+          </span>
+          {activeFilters > 0 && (
             <Button variant="secondary" onClick={clearFilters}>
               Clear filters
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </aside>
 
       <section aria-labelledby="results" className="flex min-w-0 flex-col gap-4 lg:col-start-2">
-        <h2 id="results" className="ds-label text-(--ds-muted)" aria-live="polite">
+        <h2 id="results" ref={resultsHeading} tabIndex={-1} className="ds-label scroll-mt-4 text-(--ds-muted) outline-none" aria-live="polite">
           {shown.length === 1 ? "1 recipe" : `${shown.length} recipes`}
         </h2>
         {shown.length === 0 ? (

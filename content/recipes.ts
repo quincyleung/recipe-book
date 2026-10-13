@@ -9,8 +9,9 @@ export type Recipe = {
   slug: string;
   name: string;
   meal: Meal;
-  protein: string;
-  /** Hands-on and cooking time, in minutes. */
+  /** Main ingredients, for filtering; a dish can have more than one. */
+  proteins: string[];
+  /** Total time from starting to cook to food on the plate, in minutes. Make-ahead time is not included. */
   minutes: number;
   servings: number;
   /** Anything that has to happen the day before. */
@@ -26,8 +27,8 @@ export const recipes: Recipe[] = [
     slug: "nobu-miso-cod",
     name: "Nobu Miso Cod",
     meal: "dinner",
-    protein: "Fish",
-    minutes: 15,
+    proteins: ["Fish"],
+    minutes: 25,
     servings: 2,
     aheadNote: "Marinate overnight, up to 3 days.",
     ingredients: [
@@ -53,8 +54,8 @@ export const recipes: Recipe[] = [
     slug: "beef-enoki-rolls",
     name: "Beef Enoki Rolls",
     meal: "dinner",
-    protein: "Beef",
-    minutes: 20,
+    proteins: ["Beef"],
+    minutes: 25,
     servings: 2,
     ingredients: [
       { amount: "250 g", item: "thin-sliced beef (shabu-shabu cut)" },
@@ -80,8 +81,8 @@ export const recipes: Recipe[] = [
     slug: "honey-garlic-salmon",
     name: "Honey Garlic Salmon",
     meal: "dinner",
-    protein: "Fish",
-    minutes: 15,
+    proteins: ["Fish"],
+    minutes: 20,
     servings: 2,
     ingredients: [
       { amount: "2 fillets", item: "salmon" },
@@ -107,8 +108,8 @@ export const recipes: Recipe[] = [
     slug: "cantonese-shrimp-and-egg",
     name: "Cantonese Shrimp and Egg",
     meal: "dinner",
-    protein: "Seafood",
-    minutes: 15,
+    proteins: ["Seafood", "Eggs"],
+    minutes: 20,
     servings: 2,
     ingredients: [
       { amount: "200 g", item: "shrimp, peeled" },
@@ -134,8 +135,8 @@ export const recipes: Recipe[] = [
     slug: "ground-beef-bell-peppers",
     name: "Ground Beef with Bell Peppers",
     meal: "dinner",
-    protein: "Beef",
-    minutes: 20,
+    proteins: ["Beef"],
+    minutes: 25,
     servings: 2,
     ingredients: [
       { amount: "300 g", item: "ground beef" },
@@ -153,6 +154,7 @@ export const recipes: Recipe[] = [
     ],
     notes: [
       "Any color of bell pepper works; a mix looks best.",
+      "The time doesn't include rice; start it first, or use leftover rice.",
       "Leftovers keep well for lunch the next day.",
     ],
   },
@@ -160,8 +162,8 @@ export const recipes: Recipe[] = [
     slug: "banana-oat-pancakes",
     name: "Banana Oat Pancakes",
     meal: "breakfast",
-    protein: "Eggs",
-    minutes: 15,
+    proteins: ["Eggs"],
+    minutes: 20,
     servings: 1,
     ingredients: [
       { amount: "1", item: "ripe banana" },
@@ -185,7 +187,7 @@ export const recipes: Recipe[] = [
     slug: "strawberry-overnight-oats",
     name: "Strawberry Overnight Oats",
     meal: "breakfast",
-    protein: "Dairy",
+    proteins: ["Dairy"],
     minutes: 5,
     servings: 1,
     aheadNote: "Make the night before.",

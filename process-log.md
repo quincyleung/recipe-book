@@ -143,3 +143,38 @@
 - **Button placement:** at 390, 480, 640, 768, 900, 1024, 1280, and 1440px, no button text is clipped or wrapped, no button is off-screen or overlapping another, and the page never scrolls sideways. Resizing live from laptop to phone and back while cooking keeps the current step and the bar.
 
 **Fixed after testing:** on recipes shorter than the screen, the cooking bar sat just under the content instead of on the bottom edge. The page now fills the screen height, so the bar always sits on the bottom edge.
+
+## 2026-10-13: Refined drawings, timers, servings, and fixes
+
+**Asked:**
+- The drawings look like basic shapes; make them more refined.
+- What does Start cooking do? Maybe it could start a timer.
+- Time filters should be "under 30" and "under 15" minutes.
+- Eggs should include the Cantonese shrimp and egg dish.
+- The times aren't accurate; make them total cooking time, since some should be longer.
+- Let me adjust portions by servings.
+- Make "All recipes" match the design system, and align it with "Save recipe".
+- When I filter (for example Breakfast), the recipes should stay aligned to the top.
+
+**Made:**
+- **Redrawn dishes:**
+  - Gradients for volume and glaze, and real details: salmon fat lines and garlic, segmented shrimp with tails, seared beef rolls with fanned enoki, rice grains under the beef and peppers, banana slices with seed rings, butter and syrup on the pancakes, oat flakes, chia, and a yogurt swirl.
+  - Miso cod redrawn as a glazed fillet on a leaf with a flaky white edge and pickled ginger beside it.
+  - Settings: cha chaan teng plates with a colored rim band and a hard shadow, a mosaic tablecloth with varied tiles, ivory chopsticks with red tips for dinners, a fork or spoon for breakfasts, and a faint print grain.
+  - Every drawing now uses its own internal ids, because Next keeps hidden pages in the DOM and shared ids could make a visible drawing point at a hidden one.
+- **Start cooking** now starts a cooking clock. Steps that mention a time ("4 minutes", "30 seconds", the lower end of "10 to 12 minutes") offer a "Start 4:00 timer" button. It counts down, shows "time's up" with an alert, and vibrates where supported. Finish reports how long the cook took. Timer buttons are secondary, so "Next step" stays the only red button. On phones the bar has two rows (clock and timer, then Previous, step count, and Next); from 768px up it's one row.
+- **Time filters** are now "30 min or less" and "15 min or less". I kept "or less" rather than "under", so a 15-minute dish isn't hidden by the 15-minute filter.
+- **Main ingredients** can now be more than one, so Cantonese Shrimp and Egg counts as both Seafood and Eggs.
+- **Times are total time,** from starting to cook to food on the plate, not counting overnight make-ahead: miso cod 25, beef enoki 25, salmon 20, shrimp and egg 20, ground beef 25 (rice not included, now in its notes), pancakes 20, oats 5. These are estimates for me to adjust. Matching times on the mood boards and design system samples were updated too.
+- **Servings:** a − / + control on the Ingredients tab (1 to 12) rescales every amount. Fractions stay readable (1½, ¼, ⅛), grams round to 5, and words agree with the count ("1 fillet", "1 bell pepper", "2 ripe bananas"); "pinch" stays a pinch. "Serves N" in the header follows.
+- **Back button:** "← All recipes" is now a design-system button (a new `ButtonLink`), and it lines up exactly with "Save recipe".
+- **Filter alignment:** on laptops the sidebar spans two grid rows, and when it was taller than the results it stretched the toolbar row, pushing results down. The rows are now auto/1fr, so results start in the same place for any filter. On phones, a new "Show N recipes" button closes the Filters panel and takes you to the results.
+
+**Verified in Chrome:**
+- Servings math on four recipes.
+- The back and Save buttons share the same top and bottom edges.
+- The clock, the 4:00 timer and Cancel, a 20-second timer running out, and Finish.
+- The new filters, with Eggs including the shrimp dish.
+- Results start 24px under the toolbar for All, Breakfast, Dinner, and List view at 1024 and 1440px.
+- Button placement at 390 to 1440px with the timer bar, with no overlaps, wrapping, or sideways scroll.
+- No console errors.

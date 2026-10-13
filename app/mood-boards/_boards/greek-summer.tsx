@@ -182,7 +182,7 @@ export const greekSummer: Board = {
         <div>
           <p className="font-marcellus text-lg leading-tight">Honey Garlic Salmon</p>
           <p className="mt-1 text-xs" style={{ color: muted }}>
-            Dinner · 15 min · Serves 2
+            Dinner · 20 min · Serves 2
           </p>
         </div>
       </div>,

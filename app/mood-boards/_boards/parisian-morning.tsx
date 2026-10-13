@@ -171,7 +171,7 @@ export const parisianMorning: Board = {
           <div className="aspect-[3/2]" style={{ backgroundColor: marble }} />
           <p className="mt-3 font-cormorant text-xl leading-tight">Banana Oat Pancakes</p>
           <p className="mt-1 text-[10px] tracking-widest uppercase" style={{ color: muted }}>
-            Breakfast · 15 min
+            Breakfast · 20 min
           </p>
         </div>
       </div>,
@@ -185,7 +185,7 @@ export const parisianMorning: Board = {
           <ul className="flex flex-col gap-1.5 text-left text-[11px]">
             <li className="flex gap-1">
               Pancakes <span className="flex-1 border-b border-dotted" style={{ borderColor: muted }} />
-              <span className="whitespace-nowrap">15 min</span>
+              <span className="whitespace-nowrap">20 min</span>
             </li>
             <li className="flex gap-1">
               Overnight oats <span className="flex-1 border-b border-dotted" style={{ borderColor: muted }} />

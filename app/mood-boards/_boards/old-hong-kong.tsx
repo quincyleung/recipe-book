@@ -193,7 +193,7 @@ export const oldHongKong: Board = {
         <p className="font-noto-serif-tc text-lg leading-tight font-black">滑蛋蝦仁</p>
         <p className="text-sm leading-tight">Cantonese Shrimp and Egg</p>
         <p className="text-xs" style={{ color: muted }}>
-          15 MIN · SERVES 2
+          20 MIN · SERVES 2
         </p>
       </div>,
     ),

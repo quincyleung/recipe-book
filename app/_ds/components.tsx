@@ -31,8 +31,11 @@ const buttonVariants = {
     "border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) text-(--ds-text) ds-hover:not-aria-pressed:not-aria-expanded:bg-(--ds-soft) ds-pressed:not-aria-pressed:not-aria-expanded:bg-(--ds-soft-pressed) ds-pressed:border-(--ds-text) aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected) aria-expanded:border-(--ds-selected-border) aria-expanded:bg-(--ds-selected) aria-expanded:text-(--ds-on-selected)",
 };
 
+const buttonBase = `ds-control inline-flex min-h-11 items-center justify-center gap-2 rounded-(--ds-radius-control) py-2.5 whitespace-nowrap shadow-(--ds-shadow-control) transition-[background-color,color,border-color,box-shadow,translate,scale] duration-150 ${press} ${focusRing}`;
+
 export function Button({
   variant = "primary",
+  iconLabel,
   selected,
   expanded,
   controls,
@@ -42,6 +45,8 @@ export function Button({
   children,
 }: {
   variant?: keyof typeof buttonVariants;
+  /** For a square icon-only button: its accessible name. */
+  iconLabel?: string;
   /** Makes it a toggle button (aria-pressed). */
   selected?: boolean;
   /** Makes it a disclosure button for the element with id `controls`. */
@@ -55,16 +60,34 @@ export function Button({
   return (
     <button
       type="button"
+      aria-label={iconLabel}
       aria-pressed={selected}
       aria-expanded={expanded}
       aria-controls={controls}
       data-force={force}
       disabled={disabled}
       onClick={onClick}
-      className={`ds-control inline-flex min-h-11 items-center justify-center gap-2 rounded-(--ds-radius-control) px-5 py-2.5 whitespace-nowrap shadow-(--ds-shadow-control) transition-[background-color,color,border-color,box-shadow,translate,scale] duration-150 ${buttonVariants[variant]} ${press} ${focusRing} ${disabledFill}`}
+      className={`${buttonBase} ${iconLabel ? "w-11 px-0" : "px-5"} ${buttonVariants[variant]} ${disabledFill}`}
     >
       {children}
     </button>
+  );
+}
+
+/** A link that looks like a button, for navigation such as "back". */
+export function ButtonLink({
+  href,
+  variant = "secondary",
+  children,
+}: {
+  href: string;
+  variant?: keyof typeof buttonVariants;
+  children: ReactNode;
+}) {
+  return (
+    <Link href={href} className={`${buttonBase} px-5 ${buttonVariants[variant]}`}>
+      {children}
+    </Link>
   );
 }
 
