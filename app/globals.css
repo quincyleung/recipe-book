@@ -23,3 +23,98 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/*
+ * Design system states. Each one also matches data-force="…", so the
+ * control-states table can show hover, focus, and pressed side by side
+ * using exactly the styles a real interaction gets.
+ */
+@custom-variant ds-hover {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      @slot;
+    }
+  }
+  &[data-force="hover"] {
+    @slot;
+  }
+}
+
+@custom-variant ds-focus {
+  &:focus-visible {
+    @slot;
+  }
+  &[data-force="focus"] {
+    @slot;
+  }
+}
+
+@custom-variant ds-pressed {
+  &:active:not(:disabled) {
+    @slot;
+  }
+  &[data-force="pressed"] {
+    @slot;
+  }
+}
+
+/* Type roles. Each theme sets the --ds-* variables these read. */
+@utility ds-display {
+  font-family: var(--ds-display-font);
+  font-size: var(--ds-display-size);
+  font-weight: var(--ds-display-weight);
+  font-style: var(--ds-display-style);
+  text-transform: var(--ds-display-case);
+  letter-spacing: var(--ds-display-tracking);
+  line-height: var(--ds-display-leading);
+}
+
+@utility ds-heading {
+  font-family: var(--ds-heading-font);
+  font-size: var(--ds-heading-size);
+  font-weight: var(--ds-heading-weight);
+  font-style: var(--ds-heading-style);
+  text-transform: var(--ds-heading-case);
+  letter-spacing: var(--ds-heading-tracking);
+  line-height: var(--ds-heading-leading);
+}
+
+@utility ds-title {
+  font-family: var(--ds-title-font);
+  font-size: var(--ds-title-size);
+  font-weight: var(--ds-title-weight);
+  font-style: var(--ds-title-style);
+  text-transform: var(--ds-title-case);
+  letter-spacing: var(--ds-title-tracking);
+  line-height: var(--ds-title-leading);
+}
+
+@utility ds-body {
+  font-family: var(--ds-body-font);
+  font-size: var(--ds-body-size);
+  font-weight: var(--ds-body-weight);
+  font-style: var(--ds-body-style);
+  text-transform: var(--ds-body-case);
+  letter-spacing: var(--ds-body-tracking);
+  line-height: var(--ds-body-leading);
+}
+
+@utility ds-label {
+  font-family: var(--ds-label-font);
+  font-size: var(--ds-label-size);
+  font-weight: var(--ds-label-weight);
+  font-style: var(--ds-label-style);
+  text-transform: var(--ds-label-case);
+  letter-spacing: var(--ds-label-tracking);
+  line-height: var(--ds-label-leading);
+}
+
+@utility ds-control {
+  font-family: var(--ds-control-font);
+  font-size: var(--ds-control-size);
+  font-weight: var(--ds-control-weight);
+  font-style: var(--ds-control-style);
+  text-transform: var(--ds-control-case);
+  letter-spacing: var(--ds-control-tracking);
+  line-height: var(--ds-control-leading);
+}

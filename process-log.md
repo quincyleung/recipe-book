@@ -69,3 +69,21 @@
 **Made:** Removed the salad photo and its credit. Greek Summer now has 29 artifacts (14 collected, 15 made).
 
 **Pushed back:** I rejected another of the agent's photo picks: a close-up food shot didn't match the whitewashed, seaside feel.
+
+## 2026-10-13: Design systems
+
+**Asked:** Build `/design-systems/[style]` from each mood board as a UI library with the six sections from the brief: color roles with contrast ratios, type roles set in my recipe content, spacing and shape, components (plus an ingredient checklist and a step list), control states, and UI states. Text pairs must pass WCAG AA.
+
+**Made:**
+- One component library (`app/_ds/components.tsx`) themed by CSS variables. Each style's tokens (`app/_ds/themes.ts`) come from its mood board:
+  - **Greek Summer:** whitewash and navy, with Aegean blue as the accent; pill buttons and soft 12 to 20px corners; no shadow, a thin limestone line instead; Marcellus and Manrope.
+  - **Parisian Morning:** ivory and espresso, with a deepened gilt (#8A6A2E) as the accent so white text passes AA on it; square corners and hairlines; cards get a gold double frame; Cormorant Garamond and Jost, with uppercase tracked controls.
+  - **Old Hong Kong:** cream and ink, with signage red as the accent and jade for selection; 2px ink outlines and a hard offset shadow, so pressing a button pushes it into its shadow; Oswald and Noto Serif TC, with Geist for body text.
+- The accent is kept for the primary action. Selected chips, tabs, and checkboxes use a separate selected color.
+- Inputs get a darker "control" outline (3:1 or more) because the decorative border color is too faint for an outline.
+- **Color roles** list 16 checked pairs with their ratios. The page throws if any pair is below 4.5:1 for text or 3:1 for outlines, so the build fails. I checked this by breaking one color: the build stopped with "Muted text on background is 2.1:1, below 4.5:1".
+- **Type roles** (display, heading, title, body, label, control) are set in recipe content, such as "Honey Garlic Salmon" and real steps.
+- **Components:** primary and secondary buttons, a link, a search input, a select, checkboxes, radios, a "Keep screen awake" toggle, tabs, filter chips, recipe cards, list rows, badges, a detail panel and a real `<dialog>` modal, an ingredient checklist with a "2 of 6 ready" count, and a step list with previous and next.
+- **Control states** show seven controls in rest, hover, focus, pressed, selected, and disabled, using a custom variant so the static samples match real interactions.
+- **UI states:** empty, loading, error, and success.
+- Verified in real Chrome over the DevTools protocol on all three styles: the toggle, tabs (click and arrow keys), chips, save, checklist, step list, and modal (focus moves in, and it closes) all work, with no console errors and no horizontal overflow at 390px or 1440px. After the first look I fixed pressed states that were too subtle (added a deeper pressed tint), radio labels that wrapped, and UI state cards with uneven heights.

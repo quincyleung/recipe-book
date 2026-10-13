@@ -1,0 +1,605 @@
+"use client";
+
+import { useId, useRef, useState, type KeyboardEvent, type ReactNode, type Ref } from "react";
+import type { Recipe } from "@/content/recipes";
+
+/** Forces a visual state for the control-states table. */
+export type Force = "hover" | "focus" | "pressed";
+
+const focusRing = "ds-focus:outline-2 ds-focus:outline-offset-2 ds-focus:outline-(--ds-focus)";
+const disabledFill =
+  "disabled:cursor-not-allowed disabled:border-transparent disabled:bg-(--ds-disabled-bg) disabled:text-(--ds-disabled-text) disabled:shadow-none";
+const press =
+  "ds-pressed:translate-x-(--ds-press-shift) ds-pressed:translate-y-(--ds-press-shift) ds-pressed:scale-(--ds-press-scale) ds-pressed:shadow-none";
+
+/* Buttons and link */
+
+const buttonVariants = {
+  primary:
+    "border-(length:--ds-primary-border-width) border-(--ds-control) bg-(--ds-accent) text-(--ds-on-accent) ds-hover:bg-(--ds-accent-hover) ds-pressed:bg-(--ds-accent-pressed)",
+  secondary:
+    "border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) text-(--ds-text) ds-hover:not-aria-pressed:bg-(--ds-soft) ds-pressed:not-aria-pressed:bg-(--ds-soft-pressed) ds-pressed:border-(--ds-text) aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected)",
+};
+
+export function Button({
+  variant = "primary",
+  selected,
+  force,
+  disabled,
+  onClick,
+  children,
+}: {
+  variant?: keyof typeof buttonVariants;
+  /** Makes it a toggle button (aria-pressed). */
+  selected?: boolean;
+  force?: Force;
+  disabled?: boolean;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      data-force={force}
+      disabled={disabled}
+      onClick={onClick}
+      className={`ds-control inline-flex min-h-11 items-center justify-center gap-2 rounded-(--ds-radius-control) px-5 py-2.5 whitespace-nowrap shadow-(--ds-shadow-control) transition-[background-color,color,border-color,box-shadow,translate,scale] duration-150 ${buttonVariants[variant]} ${press} ${focusRing} ${disabledFill}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function SaveButton() {
+  const [saved, setSaved] = useState(false);
+  return (
+    <Button variant="secondary" selected={saved} onClick={() => setSaved(!saved)}>
+      {saved ? "✓ Saved" : "Save recipe"}
+    </Button>
+  );
+}
+
+export function TextLink({ href, force, children }: { href: string; force?: Force; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      data-force={force}
+      className={`ds-body text-(--ds-text) underline decoration-(--ds-indicator) decoration-1 underline-offset-4 ds-hover:decoration-2 ds-pressed:text-(--ds-muted) ${focusRing}`}
+    >
+      {children}
+    </a>
+  );
+}
+
+/* Inputs */
+
+const field =
+  "ds-body min-h-11 w-full rounded-(--ds-radius-field) border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) px-3 text-(--ds-text) transition-colors ds-hover:border-(--ds-text) ds-focus:border-(--ds-text) disabled:cursor-not-allowed disabled:border-(--ds-disabled-bg) disabled:bg-(--ds-disabled-bg) disabled:text-(--ds-disabled-text)";
+
+function FieldLabel({ children }: { children: ReactNode }) {
+  return <span className="ds-label text-(--ds-muted)">{children}</span>;
+}
+
+export function TextField({
+  label,
+  placeholder,
+  force,
+  disabled,
+}: {
+  label: string;
+  placeholder: string;
+  force?: Force;
+  disabled?: boolean;
+}) {
+  return (
+    <label className="flex w-full flex-col gap-1.5">
+      <FieldLabel>{label}</FieldLabel>
+      <input
+        type="search"
+        placeholder={placeholder}
+        data-force={force}
+        disabled={disabled}
+        className={`${field} placeholder:text-(--ds-muted) ${focusRing}`}
+      />
+    </label>
+  );
+}
+
+export function Select({ label, options }: { label: string; options: string[] }) {
+  return (
+    <label className="flex w-full flex-col gap-1.5">
+      <FieldLabel>{label}</FieldLabel>
+      <span className="relative">
+        <select className={`${field} appearance-none pr-10 ${focusRing}`}>
+          {options.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+        <svg
+          viewBox="0 0 16 16"
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-(--ds-text)"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+        >
+          <path d="M4 6l4 4 4-4" />
+        </svg>
+      </span>
+    </label>
+  );
+}
+
+/* Choices */
+
+const choiceBox = `peer size-5 appearance-none border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) transition-[background-color,border-color,scale] checked:border-(--ds-check) checked:bg-(--ds-check) ds-hover:not-checked:border-(--ds-text) ds-pressed:not-checked:bg-(--ds-soft-pressed) ds-pressed:scale-90 ${focusRing} disabled:border-(--ds-disabled-text) disabled:bg-(--ds-disabled-bg)`;
+const choiceLabel =
+  "ds-body inline-flex min-h-11 cursor-pointer items-center gap-3 text-(--ds-text) has-disabled:cursor-not-allowed has-disabled:text-(--ds-disabled-text)";
+
+export function Checkbox({
+  label,
+  checked,
+  defaultChecked,
+  onChange,
+  force,
+  disabled,
+  done,
+}: {
+  label: ReactNode;
+  checked?: boolean;
+  defaultChecked?: boolean;
+  onChange?: (checked: boolean) => void;
+  force?: Force;
+  disabled?: boolean;
+  /** Strike the label through, for checklists. */
+  done?: boolean;
+}) {
+  return (
+    <label className={choiceLabel}>
+      <span className="relative inline-flex size-5 shrink-0">
+        <input
+          type="checkbox"
+          checked={checked}
+          defaultChecked={defaultChecked}
+          onChange={onChange && ((event) => onChange(event.target.checked))}
+          data-force={force}
+          disabled={disabled}
+          className={`${choiceBox} rounded-(--ds-radius-check)`}
+        />
+        <svg
+          viewBox="0 0 16 16"
+          aria-hidden
+          className="pointer-events-none absolute inset-0 m-auto size-3.5 text-(--ds-on-check) opacity-0 peer-checked:opacity-100"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+        >
+          <path d="M3 8.5l3 3 7-7" />
+        </svg>
+      </span>
+      <span className={done ? "text-(--ds-muted) line-through" : undefined}>{label}</span>
+    </label>
+  );
+}
+
+export function Radio({
+  name,
+  label,
+  defaultChecked,
+  disabled,
+}: {
+  name: string;
+  label: string;
+  defaultChecked?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <label className={choiceLabel}>
+      <span className="relative inline-flex size-5 shrink-0">
+        <input
+          type="radio"
+          name={name}
+          defaultChecked={defaultChecked}
+          disabled={disabled}
+          className={`${choiceBox} rounded-full`}
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 m-auto size-2 rounded-full bg-(--ds-on-check) opacity-0 peer-checked:opacity-100"
+        />
+      </span>
+      {label}
+    </label>
+  );
+}
+
+export function Toggle({ label, defaultOn = false }: { label: string; defaultOn?: boolean }) {
+  const [on, setOn] = useState(defaultOn);
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      onClick={() => setOn(!on)}
+      className={`group ds-body inline-flex min-h-11 items-center gap-3 text-left text-(--ds-text) ${focusRing}`}
+    >
+      <span className="relative h-7 w-12 shrink-0 rounded-(--ds-radius-toggle) border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) transition-colors group-aria-checked:border-(--ds-check) group-aria-checked:bg-(--ds-check)">
+        <span className="absolute top-1/2 left-1 size-4.5 -translate-y-1/2 rounded-(--ds-radius-toggle) bg-(--ds-control) transition-[translate,background-color] group-aria-checked:translate-x-5 group-aria-checked:bg-(--ds-on-check)" />
+      </span>
+      {label}
+    </button>
+  );
+}
+
+/* Navigation */
+
+export function Tab({
+  ref,
+  selected = false,
+  force,
+  disabled,
+  id,
+  controls,
+  onClick,
+  onKeyDown,
+  tabIndex,
+  children,
+}: {
+  ref?: Ref<HTMLButtonElement>;
+  selected?: boolean;
+  force?: Force;
+  disabled?: boolean;
+  id?: string;
+  controls?: string;
+  onClick?: () => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLButtonElement>) => void;
+  tabIndex?: number;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      ref={ref}
+      type="button"
+      role="tab"
+      id={id}
+      aria-selected={selected}
+      aria-controls={controls}
+      tabIndex={tabIndex}
+      data-force={force}
+      disabled={disabled}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
+      className={`ds-control -mb-px min-h-11 border-b-2 border-transparent px-1 text-(--ds-muted) transition-colors ds-hover:text-(--ds-text) ds-hover:not-aria-selected:border-(--ds-border) ds-pressed:text-(--ds-text) ds-pressed:not-aria-selected:border-(--ds-control) aria-selected:border-(--ds-indicator) aria-selected:text-(--ds-text) ${focusRing} disabled:cursor-not-allowed disabled:text-(--ds-disabled-text)`}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function Tabs({ label, tabs }: { label: string; tabs: { label: string; content: ReactNode }[] }) {
+  const [active, setActive] = useState(0);
+  const id = useId();
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    if (!step) return;
+    const next = (active + step + tabs.length) % tabs.length;
+    setActive(next);
+    refs.current[next]?.focus();
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div role="tablist" aria-label={label} className="flex gap-6 border-b border-(--ds-border)">
+        {tabs.map((tab, i) => (
+          <Tab
+            key={tab.label}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            id={`${id}-tab-${i}`}
+            controls={`${id}-panel-${i}`}
+            selected={i === active}
+            tabIndex={i === active ? 0 : -1}
+            onClick={() => setActive(i)}
+            onKeyDown={onKeyDown}
+          >
+            {tab.label}
+          </Tab>
+        ))}
+      </div>
+      {tabs.map((tab, i) => (
+        <div key={tab.label} role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`} hidden={i !== active}>
+          {tab.content}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function Chip({
+  selected = false,
+  force,
+  disabled,
+  onClick,
+  children,
+}: {
+  selected?: boolean;
+  force?: Force;
+  disabled?: boolean;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      data-force={force}
+      disabled={disabled}
+      onClick={onClick}
+      className={`ds-control inline-flex min-h-11 items-center rounded-(--ds-radius-control) border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) px-4 text-(--ds-text) transition-[background-color,color,border-color,scale] ds-hover:not-aria-pressed:bg-(--ds-soft) ds-pressed:not-aria-pressed:bg-(--ds-soft-pressed) ds-pressed:scale-95 aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected) ${focusRing} ${disabledFill}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function ChipGroup({ label, options }: { label: string; options: string[] }) {
+  const [selected, setSelected] = useState(options[0]);
+  return (
+    <div role="group" aria-label={label} className="flex flex-wrap gap-2">
+      {options.map((option) => (
+        <Chip key={option} selected={option === selected} onClick={() => setSelected(option)}>
+          {option}
+        </Chip>
+      ))}
+    </div>
+  );
+}
+
+/* Content */
+
+export function Badge({ tone = "highlight", children }: { tone?: "highlight" | "neutral"; children: ReactNode }) {
+  return (
+    <span
+      className={`ds-label inline-flex items-center rounded-(--ds-radius-control) px-2.5 py-1 ${
+        tone === "highlight"
+          ? "bg-(--ds-badge) text-(--ds-on-badge)"
+          : "border-(length:--ds-border-width) border-(--ds-control) text-(--ds-text)"
+      }`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function meta(recipe: Recipe) {
+  return `${recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · ${recipe.minutes} min · Serves ${recipe.servings}`;
+}
+
+export function RecipeCard({ recipe, force, onOpen }: { recipe: Recipe; force?: Force; onOpen?: () => void }) {
+  return (
+    <article
+      data-force={force}
+      className="relative flex flex-col gap-3 rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface) p-3 shadow-(--ds-shadow-card) transition-[border-color,translate,scale] ds-hover:border-(--ds-control) ds-pressed:scale-(--ds-press-scale) has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--ds-focus) data-[force=focus]:outline-2 data-[force=focus]:outline-offset-2 data-[force=focus]:outline-(--ds-focus)"
+    >
+      <div aria-hidden className="aspect-[4/3] rounded-(--ds-radius-field)" style={{ background: "var(--ds-art)" }} />
+      <div className="flex flex-col gap-1 px-1 pb-1">
+        <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
+        <h3 className="ds-title text-(--ds-text)">
+          <button type="button" onClick={onOpen} className="text-left outline-none after:absolute after:inset-0">
+            {recipe.name}
+          </button>
+        </h3>
+        {recipe.aheadNote && (
+          <div className="pt-1">
+            <Badge>Make ahead</Badge>
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}
+
+export function ListRows({ recipes }: { recipes: Recipe[] }) {
+  return (
+    <ul className="divide-y divide-(--ds-border) overflow-hidden rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface)">
+      {recipes.map((recipe) => (
+        <li key={recipe.slug}>
+          <button
+            type="button"
+            className="flex min-h-14 w-full items-center gap-4 px-4 py-3 text-left transition-colors ds-hover:bg-(--ds-soft) ds-pressed:bg-(--ds-soft-pressed) ds-focus:outline-2 ds-focus:-outline-offset-2 ds-focus:outline-(--ds-focus)"
+          >
+            <span className="flex flex-1 flex-col">
+              <span className="ds-body text-(--ds-text)">{recipe.name}</span>
+              <span className="ds-label text-(--ds-muted)">
+                {recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · {recipe.minutes} min
+              </span>
+            </span>
+            {recipe.aheadNote && <Badge>Make ahead</Badge>}
+            <svg viewBox="0 0 16 16" aria-hidden className="size-4 shrink-0 text-(--ds-muted)" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <path d="M6 3l5 5-5 5" />
+            </svg>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/* Detail panel and modal */
+
+function RecipeDetail({ recipe, titleId, onClose }: { recipe: Recipe; titleId: string; onClose?: () => void }) {
+  return (
+    <div className="flex flex-col gap-5 p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
+          <h3 id={titleId} className="ds-heading text-(--ds-text)">
+            {recipe.name}
+          </h3>
+        </div>
+        {onClose && (
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className={`inline-flex size-11 shrink-0 items-center justify-center rounded-(--ds-radius-control) text-(--ds-text) ds-hover:bg-(--ds-soft) ${focusRing}`}
+          >
+            <svg viewBox="0 0 16 16" aria-hidden className="size-4" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
+            </svg>
+          </button>
+        )}
+      </div>
+      <ul className="ds-body flex flex-col gap-1 text-(--ds-text)">
+        {recipe.ingredients.map((ingredient) => (
+          <li key={ingredient.item} className="flex gap-3">
+            <span className="w-20 shrink-0 text-(--ds-muted)">{ingredient.amount}</span>
+            {ingredient.item}
+          </li>
+        ))}
+      </ul>
+      <div className="flex flex-wrap gap-3">
+        <Button>Start cooking</Button>
+        {onClose && (
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const panel =
+  "rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface) shadow-(--ds-shadow-card)";
+
+export function DetailPanel({ recipe }: { recipe: Recipe }) {
+  const id = useId();
+  return (
+    <section aria-labelledby={id} className={panel}>
+      <RecipeDetail recipe={recipe} titleId={id} />
+    </section>
+  );
+}
+
+export function RecipeModal({ recipe }: { recipe: Recipe }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const id = useId();
+  const close = () => ref.current?.close();
+  return (
+    <>
+      <Button variant="secondary" onClick={() => ref.current?.showModal()}>
+        Open as a modal
+      </Button>
+      <dialog
+        ref={ref}
+        aria-labelledby={id}
+        onClick={(event) => event.target === ref.current && close()}
+        className={`m-auto w-[min(32rem,calc(100%-2rem))] p-0 text-(--ds-text) backdrop:bg-black/50 ${panel}`}
+      >
+        <RecipeDetail recipe={recipe} titleId={id} onClose={close} />
+      </dialog>
+    </>
+  );
+}
+
+/* Cooking */
+
+export function IngredientChecklist({ recipe }: { recipe: Recipe }) {
+  const [done, setDone] = useState<boolean[]>(() => recipe.ingredients.map(() => false));
+  const ready = done.filter(Boolean).length;
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-baseline justify-between gap-4">
+        <h3 className="ds-title text-(--ds-text)">Ingredients</h3>
+        <p className="ds-label text-(--ds-muted)" aria-live="polite">
+          {ready} of {recipe.ingredients.length} ready
+        </p>
+      </div>
+      <ul>
+        {recipe.ingredients.map((ingredient, i) => (
+          <li key={ingredient.item}>
+            <Checkbox
+              checked={done[i]}
+              done={done[i]}
+              onChange={(checked) => setDone(done.map((d, j) => (j === i ? checked : d)))}
+              label={
+                <>
+                  <span className="font-semibold">{ingredient.amount}</span> {ingredient.item}
+                </>
+              }
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function StepList({ recipe }: { recipe: Recipe }) {
+  const [current, setCurrent] = useState(0);
+  const last = recipe.steps.length - 1;
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-baseline justify-between gap-4">
+        <h3 className="ds-title text-(--ds-text)">Steps</h3>
+        <p className="ds-label text-(--ds-muted)" aria-live="polite">
+          Step {current + 1} of {recipe.steps.length}
+        </p>
+      </div>
+      <ol className="flex flex-col gap-1">
+        {recipe.steps.map((step, i) => {
+          const state = i < current ? "done" : i === current ? "current" : "next";
+          return (
+            <li key={step}>
+              <button
+                type="button"
+                aria-current={state === "current" ? "step" : undefined}
+                onClick={() => setCurrent(i)}
+                className={`flex w-full items-start gap-3 rounded-(--ds-radius-field) p-3 text-left transition-colors ds-hover:bg-(--ds-soft) ds-pressed:bg-(--ds-soft-pressed) aria-[current=step]:bg-(--ds-soft) ${focusRing}`}
+              >
+                <span
+                  aria-hidden
+                  className={`ds-label flex size-7 shrink-0 items-center justify-center rounded-full ${
+                    state === "current"
+                      ? "bg-(--ds-check) text-(--ds-on-check)"
+                      : state === "done"
+                        ? "text-(--ds-muted)"
+                        : "border-(length:--ds-border-width) border-(--ds-control) text-(--ds-text)"
+                  }`}
+                >
+                  {state === "done" ? "✓" : i + 1}
+                </span>
+                <span className={`ds-body ${state === "done" ? "text-(--ds-muted)" : "text-(--ds-text)"}`}>
+                  <span className="sr-only">{state === "done" ? "Done: " : ""}</span>
+                  {step}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="flex flex-wrap gap-3">
+        <Button variant="secondary" disabled={current === 0} onClick={() => setCurrent(current - 1)}>
+          Previous
+        </Button>
+        <Button disabled={current === last} onClick={() => setCurrent(current + 1)}>
+          Next step
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function Spinner() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className="size-6 text-(--ds-text) motion-safe:animate-spin">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+      <path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}

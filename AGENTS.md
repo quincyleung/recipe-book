@@ -44,3 +44,12 @@ The folder for each style is set in `content/styles.ts`. Folder names have space
 
 - Commit after each step with a clear message, then push to GitHub (`origin main`).
 - Append to `process-log.md` after each step: what I asked for, what you made, and where I pushed back.
+
+## Design systems
+
+- Tokens for each style live in `app/_ds/themes.ts`: colors, type roles, and shape. `themeVars()` turns them into `--ds-*` CSS variables.
+- Components live in `app/_ds/components.tsx` and read only those variables, so `/recipes` reuses them by wrapping the page in `themeVars(themes[slug])` plus the style's font classes from `app/_fonts.ts`.
+- Type roles are the `ds-display`, `ds-heading`, `ds-title`, `ds-body`, `ds-label`, and `ds-control` utilities in `app/globals.css`.
+- State variants `ds-hover`, `ds-focus`, and `ds-pressed` also match `data-force="…"`, which the control-states table uses.
+- The accent is only for the primary action. Selection uses `selected` and `check`.
+- `/design-systems/[style]` checks every text pair against WCAG AA at build time, and the build fails if one drops below.
