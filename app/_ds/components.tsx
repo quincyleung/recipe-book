@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode, type Ref } from "react";
+import Link from "next/link";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type Ref,
+} from "react";
 import type { Recipe } from "@/content/recipes";
 
 /** Forces a visual state for the control-states table. */
@@ -18,12 +28,14 @@ const buttonVariants = {
   primary:
     "border-(length:--ds-primary-border-width) border-(--ds-control) bg-(--ds-accent) text-(--ds-on-accent) ds-hover:bg-(--ds-accent-hover) ds-pressed:bg-(--ds-accent-pressed)",
   secondary:
-    "border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) text-(--ds-text) ds-hover:not-aria-pressed:bg-(--ds-soft) ds-pressed:not-aria-pressed:bg-(--ds-soft-pressed) ds-pressed:border-(--ds-text) aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected)",
+    "border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) text-(--ds-text) ds-hover:not-aria-pressed:not-aria-expanded:bg-(--ds-soft) ds-pressed:not-aria-pressed:not-aria-expanded:bg-(--ds-soft-pressed) ds-pressed:border-(--ds-text) aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected) aria-expanded:border-(--ds-selected-border) aria-expanded:bg-(--ds-selected) aria-expanded:text-(--ds-on-selected)",
 };
 
 export function Button({
   variant = "primary",
   selected,
+  expanded,
+  controls,
   force,
   disabled,
   onClick,
@@ -32,6 +44,9 @@ export function Button({
   variant?: keyof typeof buttonVariants;
   /** Makes it a toggle button (aria-pressed). */
   selected?: boolean;
+  /** Makes it a disclosure button for the element with id `controls`. */
+  expanded?: boolean;
+  controls?: string;
   force?: Force;
   disabled?: boolean;
   onClick?: () => void;
@@ -41,6 +56,8 @@ export function Button({
     <button
       type="button"
       aria-pressed={selected}
+      aria-expanded={expanded}
+      aria-controls={controls}
       data-force={force}
       disabled={disabled}
       onClick={onClick}
@@ -62,13 +79,13 @@ export function SaveButton() {
 
 export function TextLink({ href, force, children }: { href: string; force?: Force; children: ReactNode }) {
   return (
-    <a
+    <Link
       href={href}
       data-force={force}
       className={`ds-body text-(--ds-text) underline decoration-(--ds-indicator) decoration-1 underline-offset-4 ds-hover:decoration-2 ds-pressed:text-(--ds-muted) ${focusRing}`}
     >
       {children}
-    </a>
+    </Link>
   );
 }
 
@@ -112,12 +129,26 @@ export function TextField({
   );
 }
 
-export function Select({ label, options }: { label: string; options: string[] }) {
+export function Select({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  value?: string;
+  onChange?: (value: string) => void;
+}) {
   return (
     <label className="flex w-full flex-col gap-1.5">
       <FieldLabel>{label}</FieldLabel>
       <span className="relative">
-        <select className={`${field} appearance-none pr-10 ${focusRing}`}>
+        <select
+          value={value}
+          onChange={onChange && ((event) => onChange(event.target.value))}
+          className={`${field} appearance-none pr-10 ${focusRing}`}
+        >
           {options.map((option) => (
             <option key={option}>{option}</option>
           ))}
@@ -192,12 +223,16 @@ export function Checkbox({
 export function Radio({
   name,
   label,
+  checked,
   defaultChecked,
+  onChange,
   disabled,
 }: {
   name: string;
   label: string;
+  checked?: boolean;
   defaultChecked?: boolean;
+  onChange?: () => void;
   disabled?: boolean;
 }) {
   return (
@@ -206,7 +241,9 @@ export function Radio({
         <input
           type="radio"
           name={name}
+          checked={checked}
           defaultChecked={defaultChecked}
+          onChange={onChange}
           disabled={disabled}
           className={`${choiceBox} rounded-full`}
         />
@@ -222,14 +259,18 @@ export function Radio({
 
 export function Toggle({
   label,
+  on: controlled,
   defaultOn = false,
   onChange,
 }: {
   label: string;
+  /** Pass to control it from outside. */
+  on?: boolean;
   defaultOn?: boolean;
   onChange?: (on: boolean) => void;
 }) {
-  const [on, setOn] = useState(defaultOn);
+  const [own, setOn] = useState(defaultOn);
+  const on = controlled ?? own;
   return (
     <button
       type="button"
@@ -253,6 +294,7 @@ export function Toggle({
 
 export function Tab({
   ref,
+  fill = false,
   selected = false,
   force,
   disabled,
@@ -264,6 +306,8 @@ export function Tab({
   children,
 }: {
   ref?: Ref<HTMLButtonElement>;
+  /** Share the row equally on small screens. */
+  fill?: boolean;
   selected?: boolean;
   force?: Force;
   disabled?: boolean;
@@ -287,15 +331,31 @@ export function Tab({
       disabled={disabled}
       onClick={onClick}
       onKeyDown={onKeyDown}
-      className={`ds-control -mb-px min-h-11 border-b-2 border-transparent px-1 text-(--ds-muted) transition-colors ds-hover:text-(--ds-text) ds-hover:not-aria-selected:border-(--ds-border) ds-pressed:text-(--ds-text) ds-pressed:not-aria-selected:border-(--ds-control) aria-selected:border-(--ds-indicator) aria-selected:text-(--ds-text) ${focusRing} disabled:cursor-not-allowed disabled:text-(--ds-disabled-text)`}
+      className={`ds-control -mb-px min-h-11 border-b-2 border-transparent px-1 text-(--ds-muted) ${fill ? "flex-1 text-center sm:flex-none sm:text-left" : ""} transition-colors ds-hover:text-(--ds-text) ds-hover:not-aria-selected:border-(--ds-border) ds-pressed:text-(--ds-text) ds-pressed:not-aria-selected:border-(--ds-control) aria-selected:border-(--ds-indicator) aria-selected:text-(--ds-text) ${focusRing} disabled:cursor-not-allowed disabled:text-(--ds-disabled-text)`}
     >
       {children}
     </button>
   );
 }
 
-export function Tabs({ label, tabs }: { label: string; tabs: { label: string; content: ReactNode }[] }) {
-  const [active, setActive] = useState(0);
+export function Tabs({
+  label,
+  tabs,
+  active: controlled,
+  onActiveChange,
+  fill = false,
+}: {
+  label: string;
+  tabs: { label: ReactNode; content: ReactNode }[];
+  /** Tabs share the row equally on small screens. */
+  fill?: boolean;
+  /** Pass to control the selected tab from outside. */
+  active?: number;
+  onActiveChange?: (index: number) => void;
+}) {
+  const [own, setOwn] = useState(0);
+  const active = controlled ?? own;
+  const setActive = onActiveChange ?? setOwn;
   const id = useId();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -309,10 +369,11 @@ export function Tabs({ label, tabs }: { label: string; tabs: { label: string; co
 
   return (
     <div className="flex flex-col gap-4">
-      <div role="tablist" aria-label={label} className="flex gap-6 border-b border-(--ds-border)">
+      <div role="tablist" aria-label={label} className={`flex border-b border-(--ds-border) ${fill ? "gap-2 sm:gap-6" : "gap-6"}`}>
         {tabs.map((tab, i) => (
           <Tab
-            key={tab.label}
+            key={i}
+            fill={fill}
             ref={(el) => {
               refs.current[i] = el;
             }}
@@ -328,7 +389,7 @@ export function Tabs({ label, tabs }: { label: string; tabs: { label: string; co
         ))}
       </div>
       {tabs.map((tab, i) => (
-        <div key={tab.label} role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`} hidden={i !== active}>
+        <div key={i} role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`} hidden={i !== active}>
           {tab.content}
         </div>
       ))}
@@ -404,31 +465,41 @@ function summary(recipe: Recipe) {
 export function RecipeCard({
   recipe,
   force,
+  href,
   onOpen,
-  art = true,
+  media,
   showSummary = false,
 }: {
   recipe: Recipe;
   force?: Force;
+  /** Makes the card a link to the recipe's page. */
+  href?: string;
   onOpen?: () => void;
-  /** The style's texture where a photo would go. */
-  art?: boolean;
+  /** A photo or drawing; defaults to the style's texture. */
+  media?: ReactNode;
   /** A short list of the main ingredients. */
   showSummary?: boolean;
 }) {
+  const stretch = "text-left outline-none after:absolute after:inset-0";
   return (
     <article
       data-force={force}
       className="relative flex flex-col gap-3 rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface) p-3 shadow-(--ds-shadow-card) transition-[border-color,translate,scale] ds-hover:border-(--ds-control) ds-pressed:scale-(--ds-press-scale) has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--ds-focus) data-[force=focus]:outline-2 data-[force=focus]:outline-offset-2 data-[force=focus]:outline-(--ds-focus)"
     >
-      {art && (
-        <div aria-hidden className="aspect-[4/3] rounded-(--ds-radius-field)" style={{ background: "var(--ds-art)" }} />
-      )}
+      <div aria-hidden className="overflow-hidden rounded-(--ds-radius-field)">
+        {media ?? <div className="aspect-[4/3]" style={{ background: "var(--ds-art)" }} />}
+      </div>
       <div className="flex flex-col gap-1 px-1 pb-1">
         <h3 className="ds-title text-(--ds-text)">
-          <button type="button" onClick={onOpen} className="text-left outline-none after:absolute after:inset-0">
-            {recipe.name}
-          </button>
+          {href ? (
+            <Link href={href} className={stretch}>
+              {recipe.name}
+            </Link>
+          ) : (
+            <button type="button" onClick={onOpen} className={stretch}>
+              {recipe.name}
+            </button>
+          )}
         </h3>
         <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
         {showSummary && <p className="ds-body text-(--ds-muted)">{summary(recipe)}</p>}
@@ -442,28 +513,59 @@ export function RecipeCard({
   );
 }
 
-export function ListRows({ recipes }: { recipes: Recipe[] }) {
+export function ListRows({
+  recipes,
+  hrefFor,
+  thumb,
+}: {
+  recipes: Recipe[];
+  /** Makes each row a link to that recipe's page. */
+  hrefFor?: (recipe: Recipe) => string;
+  /** A small photo or drawing at the start of each row. */
+  thumb?: (recipe: Recipe) => ReactNode;
+}) {
+  const row =
+    "flex min-h-14 w-full items-center gap-4 px-4 py-3 text-left transition-colors ds-hover:bg-(--ds-soft) ds-pressed:bg-(--ds-soft-pressed) ds-focus:outline-2 ds-focus:-outline-offset-2 ds-focus:outline-(--ds-focus)";
   return (
     <ul className="divide-y divide-(--ds-border) overflow-hidden rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface)">
-      {recipes.map((recipe) => (
-        <li key={recipe.slug}>
-          <button
-            type="button"
-            className="flex min-h-14 w-full items-center gap-4 px-4 py-3 text-left transition-colors ds-hover:bg-(--ds-soft) ds-pressed:bg-(--ds-soft-pressed) ds-focus:outline-2 ds-focus:-outline-offset-2 ds-focus:outline-(--ds-focus)"
-          >
-            <span className="flex flex-1 flex-col">
-              <span className="ds-body text-(--ds-text)">{recipe.name}</span>
+      {recipes.map((recipe) => {
+        const content = (
+          <>
+            {thumb && (
+              <span aria-hidden className="w-16 shrink-0 overflow-hidden rounded-(--ds-radius-check) sm:w-20">
+                {thumb(recipe)}
+              </span>
+            )}
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="ds-title text-(--ds-text)">{recipe.name}</span>
               <span className="ds-label text-(--ds-muted)">
                 {recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · {recipe.minutes} min
               </span>
             </span>
-            {recipe.aheadNote && <Badge>Make ahead</Badge>}
+            {recipe.aheadNote && (
+              <span className="hidden sm:inline-flex">
+                <Badge>Make ahead</Badge>
+              </span>
+            )}
             <svg viewBox="0 0 16 16" aria-hidden className="size-4 shrink-0 text-(--ds-muted)" fill="none" stroke="currentColor" strokeWidth="1.75">
               <path d="M6 3l5 5-5 5" />
             </svg>
-          </button>
-        </li>
-      ))}
+          </>
+        );
+        return (
+          <li key={recipe.slug}>
+            {hrefFor ? (
+              <Link href={hrefFor(recipe)} className={row}>
+                {content}
+              </Link>
+            ) : (
+              <button type="button" className={row}>
+                {content}
+              </button>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -529,6 +631,11 @@ export function RecipeModal({ recipe }: { recipe: Recipe }) {
   const ref = useRef<HTMLDialogElement>(null);
   const id = useId();
   const close = () => ref.current?.close();
+  // Next keeps recent pages alive but hidden; don't leave a modal open on one.
+  useLayoutEffect(() => {
+    const dialog = ref.current;
+    return () => dialog?.close();
+  }, []);
   return (
     <>
       <Button variant="secondary" onClick={() => ref.current?.showModal()}>
@@ -548,13 +655,20 @@ export function RecipeModal({ recipe }: { recipe: Recipe }) {
 
 /* Cooking */
 
-export function IngredientChecklist({ recipe, title = "Ingredients" }: { recipe: Recipe; title?: ReactNode }) {
+export function IngredientChecklist({
+  recipe,
+  title = "Ingredients",
+}: {
+  recipe: Recipe;
+  /** null hides the heading, for example inside a tab that already names it. */
+  title?: ReactNode | null;
+}) {
   const [done, setDone] = useState<boolean[]>(() => recipe.ingredients.map(() => false));
   const ready = done.filter(Boolean).length;
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-baseline justify-between gap-4">
-        <h3 className="ds-title text-(--ds-text)">{title}</h3>
+        {title !== null && <h3 className="ds-title text-(--ds-text)">{title}</h3>}
         <p className="ds-label text-(--ds-muted)" aria-live="polite">
           {ready} of {recipe.ingredients.length} ready
         </p>
@@ -587,7 +701,8 @@ export function StepList({
   controls = true,
 }: {
   recipe: Recipe;
-  title?: ReactNode;
+  /** null hides the heading, for example inside a tab that already names it. */
+  title?: ReactNode | null;
   /** Pass to control it from outside; null means no step is current yet. */
   current?: number | null;
   onCurrentChange?: (step: number) => void;
@@ -610,7 +725,7 @@ export function StepList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-baseline justify-between gap-4">
-        <h3 className="ds-title text-(--ds-text)">{title}</h3>
+        {title !== null && <h3 className="ds-title text-(--ds-text)">{title}</h3>}
         <p className="ds-label text-(--ds-muted)" aria-live="polite">
           {current === null ? `${recipe.steps.length} steps` : `Step ${current + 1} of ${recipe.steps.length}`}
         </p>

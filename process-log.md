@@ -121,3 +121,15 @@
 **Asked:** Make the hierarchy clearer: "Recipe Book" larger, in the display font.
 
 **Made:** The page title now uses the display role (Oswald, 56px on desktop and 40px on phones, one line at both), well above the 20px card titles.
+
+## 2026-10-13: Fuller recipe site: filters, views, recipe pages, drawings
+
+**Asked:** Add filters for time, make-ahead, and main ingredient; Ingredients, Steps, and Notes tabs; both card and list views; open recipes on their own page instead of a pop-up ("what we mapped out in the design system"); add photos or drawings to the cards; and make sure buttons sit well when the window changes from laptop to phone.
+
+**Made:**
+- **List page:** search, a Sort select (quickest first, A to Z, breakfast first), and a Cards/List view switch. Filters are a sidebar on laptops and a "Filters" panel on phones that opens right under the toolbar and shows how many filters are on. The filters are meal chips, main-ingredient checkboxes (Fish, Beef, Seafood, Eggs, Dairy), time radios (any, 15 min or less, 10 min or less), and make-ahead radios (any, ready tonight, make ahead), plus "Clear filters". No match shows the empty state.
+- **Recipe pages** at `/recipes/[slug]`, built at deploy time. Name first, then meal, time, servings, and main ingredient; then the make-ahead note, "Start cooking", and "Keep screen awake"; then Ingredients, Steps, and Notes tabs. "Start cooking" jumps to Steps and brings up the bottom step bar. Next 16 keeps recent pages alive, so filters are still set when you come back from a recipe.
+- **Drawings instead of photos:** Wikimedia Commons kept timing out and had usable photos for only some dishes, and drawings fit "meals I actually cook" better than photos of other people's food. Each dish is a flat top-down plate in the sign-painting style (bold ink outlines) on a mosaic tile: jade for dinner, egg-tart yellow for breakfast. They're on the cards, as list thumbnails, and on each recipe page.
+- **Notes:** the agent drafted two practical notes per recipe from its steps; I need to edit them.
+- **Design system updates:** select, radio, toggle, and tabs can now be driven by the page; cards and list rows can link to pages and show a drawing; list rows lead with the name in the title role; the button gained an "expanded" state for the Filters toggle; `TextLink` uses Next's `Link`. Removed a global `:has(dialog[open])` scroll lock, which Next's guide warns can leak from pages it keeps hidden; the design system's demo modal now closes when its page is hidden.
+- On phones, the recipe tabs share the width equally with Chinese above English, because one line didn't fit at 390px.

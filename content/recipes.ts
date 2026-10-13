@@ -17,6 +17,8 @@ export type Recipe = {
   aheadNote?: string;
   ingredients: Ingredient[];
   steps: string[];
+  /** Tips and swaps, for the Notes tab. */
+  notes: string[];
 };
 
 export const recipes: Recipe[] = [
@@ -42,6 +44,10 @@ export const recipes: Recipe[] = [
       "Sear skin side up in an oiled oven-safe pan until the top browns, about 2 minutes.",
       "Move to the oven for 10 to 12 minutes, until the fish flakes.",
     ],
+    notes: [
+      "Wipe off most of the marinade before searing; the sugar in the miso burns quickly.",
+      "Cod or salmon work if there is no black cod. Check them a few minutes early.",
+    ],
   },
   {
     slug: "beef-enoki-rolls",
@@ -64,6 +70,10 @@ export const recipes: Recipe[] = [
       "Mix the soy sauce, mirin, and honey.",
       "Sear the rolls seam side down in an oiled pan, then turn until browned all over, about 5 minutes.",
       "Pour in the sauce and turn the rolls until glazed. Top with scallion.",
+    ],
+    notes: [
+      "Shabu-shabu or hot pot beef is thin enough to roll without tearing.",
+      "Sear seam side down first so the rolls hold together.",
     ],
   },
   {
@@ -88,6 +98,10 @@ export const recipes: Recipe[] = [
       "Add the honey and soy sauce and spoon the sauce over the fish until it thickens.",
       "Squeeze the lemon over it before serving.",
     ],
+    notes: [
+      "Pat the salmon dry so the skin crisps.",
+      "Turn the heat down before the garlic goes in so it does not burn.",
+    ],
   },
   {
     slug: "cantonese-shrimp-and-egg",
@@ -111,6 +125,10 @@ export const recipes: Recipe[] = [
       "Lower the heat to medium-low. Pour in the eggs and let them set for a few seconds.",
       "Return the shrimp and scallion. Push the eggs gently until soft and just set, then plate.",
     ],
+    notes: [
+      "Take the eggs off the heat while they still look a little wet; they keep cooking on the plate.",
+      "Dry the shrimp well so they sear instead of steam.",
+    ],
   },
   {
     slug: "ground-beef-bell-peppers",
@@ -133,6 +151,10 @@ export const recipes: Recipe[] = [
       "Add the bell peppers and stir-fry until crisp-tender, about 3 minutes.",
       "Stir in the soy sauce and oyster sauce. Serve over rice.",
     ],
+    notes: [
+      "Any color of bell pepper works; a mix looks best.",
+      "Leftovers keep well for lunch the next day.",
+    ],
   },
   {
     slug: "banana-oat-pancakes",
@@ -153,6 +175,10 @@ export const recipes: Recipe[] = [
       "Heat a buttered pan over medium-low.",
       "Pour small rounds and cook until bubbles form, about 2 minutes.",
       "Flip and cook 1 more minute.",
+    ],
+    notes: [
+      "The riper the banana, the sweeter the pancakes.",
+      "Keep the heat medium-low; they brown quickly.",
     ],
   },
   {
@@ -175,6 +201,10 @@ export const recipes: Recipe[] = [
       "Stir the oats, milk, yogurt, chia, and honey together in a jar.",
       "Top with the strawberries, close the lid, and refrigerate overnight.",
       "Stir and eat cold in the morning.",
+    ],
+    notes: [
+      "Add the strawberries in the morning if you like them firm.",
+      "A splash more milk loosens it if it sets too thick.",
     ],
   },
 ];

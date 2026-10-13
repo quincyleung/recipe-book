@@ -24,11 +24,6 @@ body {
   color: var(--foreground);
 }
 
-/* Keep the page from scrolling behind an open modal or recipe sheet. */
-html:has(dialog[open]) {
-  overflow: hidden;
-}
-
 /*
  * Design system states. Each one also matches data-force="…", so the
  * control-states table can show hover, focus, and pressed side by side
