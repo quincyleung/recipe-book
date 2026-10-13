@@ -22,10 +22,11 @@ const cormorant = Cormorant_Garamond({
 const pinyon = Pinyon_Script({ weight: "400", subsets: ["latin"], variable: "--nf-pinyon" });
 const jost = Jost({ subsets: ["latin"], variable: "--nf-jost" });
 
-// Old Hong Kong: condensed sign capitals and a heavy Chinese serif.
-const oswald = Oswald({ subsets: ["latin"], variable: "--nf-oswald" });
+// Old Hong Kong: condensed sign capitals, and a Chinese serif for body text and characters.
+// Oswald has no Chinese glyphs, so Chinese text in Oswald falls back to Noto Serif TC.
+const oswald = Oswald({ subsets: ["latin"], fallback: ["Noto Serif TC"], variable: "--nf-oswald" });
 // Google Fonts has no Chinese subset to preload; the browser fetches the glyphs it needs.
-const notoSerifTC = Noto_Serif_TC({ weight: ["500", "900"], preload: false, variable: "--nf-noto-serif-tc" });
+const notoSerifTC = Noto_Serif_TC({ weight: ["400", "900"], preload: false, variable: "--nf-noto-serif-tc" });
 
 export const fontVariables = {
   "greek-summer": `${marcellus.variable} ${manrope.variable}`,

@@ -20,8 +20,8 @@ export const oldHongKong: Board = {
   titleClassName: "font-oswald text-5xl font-semibold tracking-wide uppercase sm:text-7xl",
   headingClassName: "font-oswald text-3xl font-semibold tracking-wide uppercase",
   bodyClassName: "font-oswald",
-  // Condensed Oswald is hard to read in paragraphs; longer text uses the plain sans.
-  proseClassName: "font-sans",
+  // Condensed Oswald is hard to read in paragraphs; longer text uses the Chinese serif.
+  proseClassName: "font-noto-serif-tc",
   tileClassName: "rounded-sm",
   evokes: "A busy cha chaan teng under neon: milk tea, a bilingual menu wall, and red and green signs.",
   suits: "Fast Cantonese home cooking, read like a menu: quick to scan, loud only where it matters.",

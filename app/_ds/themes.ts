@@ -252,7 +252,7 @@ export const themes: Record<Style["slug"], Theme> = {
         uppercase: true,
         tracking: "0.02em",
       },
-      body: { family: "Geist", font: "var(--font-geist-sans)", size: "1.0625rem", px: "17px", weight: 400, leading: 1.6 },
+      body: { family: "Noto Serif TC", font: "var(--nf-noto-serif-tc)", size: "1.0625rem", px: "17px", weight: 400, leading: 1.7 },
       label: { family: "Oswald", font: "var(--nf-oswald)", size: "0.8125rem", px: "13px", weight: 500, leading: 1.4, uppercase: true, tracking: "0.08em" },
       control: { family: "Oswald", font: "var(--nf-oswald)", size: "1rem", px: "16px", weight: 500, leading: 1.2, uppercase: true, tracking: "0.06em" },
     },

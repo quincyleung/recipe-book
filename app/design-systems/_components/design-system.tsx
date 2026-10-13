@@ -169,7 +169,7 @@ export function DesignSystem({
   const c = theme.colors;
 
   return (
-    <main className={`${fonts} flex-1 bg-(--ds-bg) text-(--ds-text)`} style={themeVars(theme)}>
+    <main className={`${fonts} ds-body flex-1 bg-(--ds-bg) text-(--ds-text)`} style={themeVars(theme)}>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-8 sm:px-8 sm:py-12">
         <header className="flex flex-col gap-4">
           <nav className="ds-body flex flex-wrap gap-x-6 gap-y-2 text-sm">

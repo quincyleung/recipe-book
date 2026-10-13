@@ -87,3 +87,11 @@
 - **Control states** show seven controls in rest, hover, focus, pressed, selected, and disabled, using a custom variant so the static samples match real interactions.
 - **UI states:** empty, loading, error, and success.
 - Verified in real Chrome over the DevTools protocol on all three styles: the toggle, tabs (click and arrow keys), chips, save, checklist, step list, and modal (focus moves in, and it closes) all work, with no console errors and no horizontal overflow at 390px or 1440px. After the first look I fixed pressed states that were too subtle (added a deeper pressed tint), radio labels that wrapped, and UI state cards with uneven heights.
+
+## 2026-10-13: Old Hong Kong down to two fonts
+
+**Asked:** Old Hong Kong uses three fonts, which is a lot. Make it two.
+
+**Made:** Dropped Geist. Body text now uses Noto Serif TC (weight 400), so Oswald does the signage (display, headings, labels, buttons) and Noto Serif TC does reading text and Chinese characters. The change applies to both the mood board and the design system. Oswald now falls back to Noto Serif TC for Chinese characters; before this, the bilingual swatch names were silently drawn in the system font (PingFang). Checked in Chrome that both pages render with only Oswald and Noto Serif TC.
+
+**Pushed back:** I asked for fewer fonts in Old Hong Kong.
