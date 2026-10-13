@@ -1,9 +1,11 @@
 export type Style = {
   slug: "greek-summer" | "parisian-morning" | "old-hong-kong";
   name: string;
+  /** Three words for the mood. */
+  tagline: string;
   /** Folder in public/mood/ that holds this style's photos. */
   folder: string;
-  /** Placeholder swatches for the hub until the mood boards set real palettes. */
+  /** Three colors from the mood board, shown on the hub. */
   swatches: [string, string, string];
 };
 
@@ -11,20 +13,23 @@ export const styles: Style[] = [
   {
     slug: "greek-summer",
     name: "Greek Summer",
+    tagline: "Whitewashed · Aegean · Sun-bleached",
     folder: "Greek Summer",
-    swatches: ["#F6F3EC", "#1F4E8C", "#E9C46A"],
+    swatches: ["#F7F5F0", "#1D4E9E", "#E7DCC6"],
   },
   {
     slug: "parisian-morning",
     name: "Parisian Morning",
+    tagline: "Ivory · Gilt · Marble",
     folder: "Parisian Morning",
-    swatches: ["#F3EBDD", "#3B2A20", "#7A1F2B"],
+    swatches: ["#F8F3E8", "#B08D4C", "#2B2420"],
   },
   {
     slug: "old-hong-kong",
     name: "Old Hong Kong",
+    tagline: "Cha Chaan Teng · Neon · 中英",
     folder: "Old Hong Kong",
-    swatches: ["#2F6F5E", "#B3312C", "#E0B03A"],
+    swatches: ["#2E6B54", "#C8312B", "#F2C14E"],
   },
 ];
 

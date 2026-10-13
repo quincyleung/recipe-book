@@ -10,6 +10,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-marcellus: var(--nf-marcellus);
+  --font-manrope: var(--nf-manrope);
+  --font-cormorant: var(--nf-cormorant);
+  --font-pinyon: var(--nf-pinyon);
+  --font-jost: var(--nf-jost);
+  --font-oswald: var(--nf-oswald);
+  --font-noto-serif-tc: var(--nf-noto-serif-tc);
 }
 
 body {

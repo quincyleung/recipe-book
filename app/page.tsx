@@ -2,7 +2,7 @@ import Link from "next/link";
 import { styles, type Style } from "@/content/styles";
 
 const card =
-  "flex items-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors hover:border-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 active:bg-zinc-100";
+  "flex items-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 transition-colors hover:border-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 active:bg-zinc-100 sm:flex-col sm:items-start";
 
 function SectionLabel({ number, children }: { number: number; children: string }) {
   return (
@@ -51,7 +51,7 @@ export default function Hub() {
             <li key={style.slug}>
               <Link href={`/mood-boards/${style.slug}`} className={card}>
                 <Swatches style={style} />
-                <span className="ml-auto text-right">{style.name} →</span>
+                <span className="ml-auto sm:ml-0">{style.name} →</span>
               </Link>
             </li>
           ))}
@@ -65,7 +65,7 @@ export default function Hub() {
             <li key={style.slug}>
               <Link href={`/design-systems/${style.slug}`} className={card}>
                 <Dots style={style} />
-                <span className="ml-auto text-right">{style.name} →</span>
+                <span className="ml-auto sm:ml-0">{style.name} →</span>
               </Link>
             </li>
           ))}
