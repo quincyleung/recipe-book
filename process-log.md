@@ -61,3 +61,11 @@
 **Made:** Removed the macarons photo, so the board now has 29 artifacts (14 collected, 15 made). The Eiffel Tower through the oval window is now a key source ("Take the oval window and the pale morning light"), and je t'aime moved to References.
 
 **Pushed back:** I rejected the agent's macarons pick because it was off-palette, and chose which photo should lead.
+
+## 2026-10-13: Greek Summer edit
+
+**Asked:** The Greek salad photo doesn't fit the Mediterranean mood.
+
+**Made:** Removed the salad photo and its credit. Greek Summer now has 29 artifacts (14 collected, 15 made).
+
+**Pushed back:** I rejected another of the agent's photo picks: a close-up food shot didn't match the whitewashed, seaside feel.

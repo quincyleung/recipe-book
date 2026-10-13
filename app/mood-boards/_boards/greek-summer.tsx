@@ -48,12 +48,6 @@ export const greekSummer: Board = {
     }),
     photo("olives-bread-table", 736, 909, "Green olives, bread, and olive oil on a blue tablecloth"),
     photo("bougainvillea-alley", 736, 1104, "A stone alley with bougainvillea and a blue chair, leading to the sea"),
-    photo("greek-salad-feta", 774, 590, "A Greek salad with a slab of feta on a white plate", {
-      title: "Greek Salad Choriatiki",
-      author: "zone41 on Flickr",
-      license: "CC BY 2.0",
-      url: "https://commons.wikimedia.org/wiki/File:Greek_Salad_Choriatiki.jpg",
-    }),
     photo("blue-white-bowls", 736, 1104, "Stacked blue and white painted bowls in the sun"),
     photo("white-wall-above-sea", 960, 649, "A curved white wall and red succulents above the sea", {
       title: "Santorini, Oia 36",
