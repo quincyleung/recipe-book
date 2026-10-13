@@ -3,7 +3,7 @@ import type { Recipe } from "@/content/recipes";
 
 // Top-down drawings of each dish in the Old Hong Kong style: cha chaan teng
 // plates with a colored rim band, bold ink outlines like the shop signs, a hard
-// offset shadow, and a hand-laid mosaic tablecloth. The tile color tells the
+// offset shadow, and a hand-laid mosaic tablecloth. Just the dish, centered. The tile color tells the
 // meal: jade for dinner, egg-tart yellow for breakfast.
 
 const ink = "#1E1B16";
@@ -40,18 +40,6 @@ function taper(x1: number, y1: number, x2: number, y2: number, w1: number, w2: n
   return `M${p(x1, y1, w1 / 2, 1)} L${p(x2, y2, w2 / 2, 1)} A${w2 / 2} ${w2 / 2} 0 0 1 ${p(x2, y2, w2 / 2, -1)} L${p(x1, y1, w1 / 2, -1)}Z`;
 }
 
-/** A straight-edged band across a tapered stick, between fractions a and b of its length. */
-function band(x1: number, y1: number, x2: number, y2: number, w1: number, w2: number, a: number, b: number) {
-  const len = Math.hypot(x2 - x1, y2 - y1);
-  const nx = -(y2 - y1) / len;
-  const ny = (x2 - x1) / len;
-  const at = (f: number, side: number) => {
-    const w = (w1 + (w2 - w1) * f) / 2;
-    return `${r1(x1 + (x2 - x1) * f + nx * w * side)} ${r1(y1 + (y2 - y1) * f + ny * w * side)}`;
-  };
-  return `M${at(a, 1)} L${at(b, 1)} L${at(b, -1)} L${at(a, -1)}Z`;
-}
-
 /* Shared pieces */
 
 function Plate({ u, band, cx = 112, cy = 90 }: { u: (n: string) => string; band: string; cx?: number; cy?: number }) {
@@ -61,51 +49,6 @@ function Plate({ u, band, cx = 112, cy = 90 }: { u: (n: string) => string; band:
       <circle cx={cx} cy={cy} r="71" fill={`url(#${u("rim")})`} stroke={ink} strokeWidth="2.5" />
       <circle cx={cx} cy={cy} r="64" fill="none" stroke={band} strokeWidth="3" />
       <circle cx={cx} cy={cy} r="55" fill={`url(#${u("well")})`} stroke="#E3D8C3" strokeWidth="1.2" />
-    </g>
-  );
-}
-
-function Chopsticks() {
-  return (
-    <g strokeLinejoin="round">
-      {[
-        [197, 18, 213, 166],
-        [209, 16, 228, 162],
-      ].map(([x1, y1, x2, y2]) => (
-        <g key={x1}>
-          <path d={taper(x1 + 4, y1 + 5, x2 + 4, y2 + 5, 7, 4)} fill={ink} opacity="0.3" />
-          <path d={taper(x1, y1, x2, y2, 7, 4)} fill="#F1E6C8" stroke={ink} strokeWidth="1.6" />
-          <path d={band(x1, y1, x2, y2, 7, 4, 0, 0.13)} fill="#C8312B" stroke={ink} strokeWidth="1.4" strokeLinejoin="round" />
-        </g>
-      ))}
-    </g>
-  );
-}
-
-function Fork() {
-  return (
-    <g strokeLinejoin="round">
-      <g transform="translate(4 5)" opacity="0.3" fill={ink}>
-        <path d={taper(214, 166, 204, 70, 7, 5)} />
-        <path d="M196 70 L212 70 L211 40 L197 40 Z" />
-      </g>
-      <path d={taper(214, 166, 204, 70, 7, 5)} fill="#D9DCDD" stroke={ink} strokeWidth="1.6" />
-      <path d="M196 72 Q204 78 212 72 L211 42 L208 42 L208 62 L206 62 L206 40 L203 40 L203 62 L201 62 L201 40 L198 40 L198 62 L197 62 L197 42 Z" fill="#E7EAEB" stroke={ink} strokeWidth="1.4" />
-      <path d="M210 150 L206 90" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
-    </g>
-  );
-}
-
-function Spoon() {
-  return (
-    <g strokeLinejoin="round">
-      <g transform="translate(4 5)" fill={ink} opacity="0.3">
-        <path d={taper(220, 168, 206, 76, 6, 4.5)} />
-        <ellipse cx="203" cy="54" rx="13" ry="20" transform="rotate(-9 203 54)" />
-      </g>
-      <path d={taper(220, 168, 206, 76, 6, 4.5)} fill="#D9DCDD" stroke={ink} strokeWidth="1.6" />
-      <ellipse cx="203" cy="54" rx="13" ry="20" transform="rotate(-9 203 54)" fill="#E3E6E7" stroke={ink} strokeWidth="1.8" />
-      <ellipse cx="201" cy="50" rx="6" ry="11" transform="rotate(-9 201 50)" fill="#FFFFFF" opacity="0.7" />
     </g>
   );
 }
@@ -190,9 +133,9 @@ function StrawberrySlice({ x, y, turn, u }: { x: number; y: number; turn: number
 
 type Draw = (u: (n: string) => string) => ReactNode;
 
-const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: Draw; gradients?: Draw }> = {
+const dishes: Record<string, { plate: boolean; draw: Draw; gradients?: Draw }> = {
   "nobu-miso-cod": {
-    utensil: "chopsticks",
+    plate: true,
     gradients: (u) => (
       <>
         <radialGradient id={u("cod")} cx="0.4" cy="0.35" r="0.8">
@@ -248,7 +191,7 @@ const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: D
     ),
   },
   "beef-enoki-rolls": {
-    utensil: "chopsticks",
+    plate: true,
     gradients: (u) => (
       <linearGradient id={u("beef")} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#4C2313" />
@@ -290,7 +233,7 @@ const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: D
     ),
   },
   "honey-garlic-salmon": {
-    utensil: "chopsticks",
+    plate: true,
     gradients: (u) => (
       <radialGradient id={u("salmon")} cx="0.45" cy="0.4" r="0.72">
         <stop offset="0" stopColor="#FFB892" />
@@ -333,7 +276,7 @@ const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: D
     ),
   },
   "cantonese-shrimp-and-egg": {
-    utensil: "chopsticks",
+    plate: true,
     gradients: (u) => (
       <radialGradient id={u("egg")} cx="0.45" cy="0.42" r="0.7">
         <stop offset="0" stopColor="#FFF4C8" />
@@ -374,7 +317,7 @@ const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: D
     ),
   },
   "ground-beef-bell-peppers": {
-    utensil: "chopsticks",
+    plate: true,
     draw: () => (
       <g strokeLinejoin="round">
         <circle cx="112" cy="90" r="51" fill="#FCFAF3" stroke="#E5DCC8" strokeWidth="1" />
@@ -416,7 +359,7 @@ const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: D
     ),
   },
   "banana-oat-pancakes": {
-    utensil: "fork",
+    plate: true,
     gradients: (u) => (
       <radialGradient id={u("cake")} cx="0.5" cy="0.5" r="0.5">
         <stop offset="0" stopColor="#EFC47E" />
@@ -456,7 +399,7 @@ const dishes: Record<string, { utensil: "chopsticks" | "fork" | "spoon"; draw: D
     ),
   },
   "strawberry-overnight-oats": {
-    utensil: "spoon",
+    plate: false,
     gradients: (u) => (
       <>
         <radialGradient id={u("glass")} cx="0.5" cy="0.5" r="0.5">
@@ -520,7 +463,6 @@ export function DishArt({ recipe, fill = false }: { recipe: Recipe; fill?: boole
   const u = (name: string) => `${uid}-${name}`;
   const dish = dishes[recipe.slug];
   const palette = palettes[recipe.meal];
-  const onPlate = dish?.utensil !== "spoon";
 
   return (
     <svg
@@ -560,11 +502,11 @@ export function DishArt({ recipe, fill = false }: { recipe: Recipe; fill?: boole
         {dish?.gradients?.(u)}
       </defs>
       <rect width="240" height="180" fill={`url(#${u("tile")})`} />
-      {onPlate && <Plate u={u} band={palette.band} />}
-      {dish?.draw(u)}
-      {dish?.utensil === "chopsticks" && <Chopsticks />}
-      {dish?.utensil === "fork" && <Fork />}
-      {dish?.utensil === "spoon" && <Spoon />}
+      {/* Dishes are drawn around x = 112; shift them to the middle of the 240-wide frame. */}
+      <g transform="translate(8 0)">
+        {dish?.plate && <Plate u={u} band={palette.band} />}
+        {dish?.draw(u)}
+      </g>
       <rect width="240" height="180" filter={`url(#${u("grain")})`} style={{ mixBlendMode: "multiply" }} pointerEvents="none" />
     </svg>
   );

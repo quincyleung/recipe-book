@@ -178,3 +178,11 @@
 - Results start 24px under the toolbar for All, Breakfast, Dinner, and List view at 1024 and 1440px.
 - Button placement at 390 to 1440px with the timer bar, with no overlaps, wrapping, or sideways scroll.
 - No console errors.
+
+## 2026-10-13: Just the dish
+
+**Asked:** Remove the utensils and chopsticks and focus on the dish.
+
+**Made:** Removed the chopsticks, fork, and spoon, and centered each plate (or the oats jar) in its frame. The plate, rim band, shadow, and mosaic tablecloth stay.
+
+**Pushed back:** I rejected the utensils the agent added; the drawings should focus on the food.
