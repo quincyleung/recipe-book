@@ -114,16 +114,17 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
 
   return (
     <>
-      <header className="flex flex-col items-start gap-1">
-        <div className="flex w-full items-center justify-between gap-4">
-          <nav>
-            <TextLink href="/" tone="subtle">
-              {t.hub}
-            </TextLink>
-          </nav>
+      {/* The toggle sits beside the title from tablet width up; on phones, where both don't fit, it moves up beside "← Hub". */}
+      <header className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1">
+        <nav className="col-start-1 row-start-1">
+          <TextLink href="/" tone="subtle">
+            {t.hub}
+          </TextLink>
+        </nav>
+        <div className="col-start-2 row-start-1 justify-self-end sm:row-start-2">
           <LanguageToggle />
         </div>
-        <h1 className="ds-display">{t.title}</h1>
+        <h1 className="ds-display col-span-2 row-start-2 sm:col-span-1 sm:col-start-1">{t.title}</h1>
       </header>
 
       {/* auto/1fr rows: when the sidebar is taller, only the results row grows, so results stay at the top. */}

@@ -358,3 +358,9 @@
 - The toggle by click and by Space, in both languages.
 - Filter titles at 22px against 16px options.
 - The full sweep of 18 pages at 390 and 1440px came back clean.
+
+## 2026-10-13: Toggle aligned with the title
+
+**Asked:** Align the language toggle with "Recipe Book".
+
+**Made:** From 640px up, the toggle sits at the right end of the title row, vertically centered on the title (measured: centers 98/98 at 640px and 105/105 at 1024 and 1440px, in both languages). On phones the English title and toggle don't fit side by side, so the toggle stays at the top right, level with "← Hub". A two-column grid moves the same toggle between the two spots without a duplicate. No overflow at any width.
