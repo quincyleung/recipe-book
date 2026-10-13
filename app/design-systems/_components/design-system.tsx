@@ -101,10 +101,10 @@ function checkContrast(theme: Theme, style: Style) {
   });
 }
 
-function Section({ number, title, children }: { number: number; title: string; children: ReactNode }) {
+function Section({ id, number, title, children }: { id: string; number: number; title: string; children: ReactNode }) {
   return (
-    <section aria-labelledby={`section-${number}`} className="flex flex-col gap-6 border-t border-(--ds-border) pt-10">
-      <h2 id={`section-${number}`} className="ds-heading flex items-baseline gap-3 text-(--ds-text)">
+    <section aria-labelledby={id} className="flex flex-col gap-6 border-t border-(--ds-border) pt-10">
+      <h2 id={id} className="ds-heading flex items-baseline gap-3 scroll-mt-6 text-(--ds-text)">
         <span className="ds-label text-(--ds-muted)">{String(number).padStart(2, "0")}</span>
         {title}
       </h2>
@@ -190,7 +190,7 @@ export function DesignSystem({
           </div>
         </header>
 
-        <Section number={1} title="Color roles">
+        <Section id={`${style.slug}-section-1`} number={1} title="Color roles">
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {roles.map((role) => {
               const ratio = role.ratioOn
@@ -264,7 +264,7 @@ export function DesignSystem({
           </Group>
         </Section>
 
-        <Section number={2} title="Type roles">
+        <Section id={`${style.slug}-section-2`} number={2} title="Type roles">
           <ul className="flex flex-col divide-y divide-(--ds-border)">
             {roleSamples.map(({ role, name, sample }) => {
               const t = theme.type[role];
@@ -281,7 +281,7 @@ export function DesignSystem({
           </ul>
         </Section>
 
-        <Section number={3} title="Spacing and shape">
+        <Section id={`${style.slug}-section-3`} number={3} title="Spacing and shape">
           <div className="grid gap-10 lg:grid-cols-2">
             <Group title="Spacing scale">
               <ul className="flex items-end gap-3">
@@ -318,13 +318,13 @@ export function DesignSystem({
           </div>
         </Section>
 
-        <Section number={4} title="Components">
+        <Section id={`${style.slug}-section-4`} number={4} title="Components">
           <div className="grid gap-10 lg:grid-cols-2">
             <Group title="Buttons and link">
               <div className="flex flex-wrap items-center gap-4">
                 <Button>Start cooking</Button>
                 <SaveButton />
-                <TextLink href="#section-4">See all recipes →</TextLink>
+                <TextLink href={`#${style.slug}-section-4`}>See all recipes →</TextLink>
               </div>
             </Group>
             <Group title="Text input and select">
@@ -341,8 +341,8 @@ export function DesignSystem({
                 </div>
                 <fieldset className="flex flex-col">
                   <legend className="sr-only">Servings</legend>
-                  <Radio name="servings" label="Serves 1" />
-                  <Radio name="servings" label="Serves 2" defaultChecked />
+                  <Radio name={`${style.slug}-servings`} label="Serves 1" />
+                  <Radio name={`${style.slug}-servings`} label="Serves 2" defaultChecked />
                 </fieldset>
                 <div>
                   <Toggle label="Keep screen awake" defaultOn />
@@ -393,7 +393,7 @@ export function DesignSystem({
           </div>
         </Section>
 
-        <Section number={5} title="Control states">
+        <Section id={`${style.slug}-section-5`} number={5} title="Control states">
           <StateRow
             name="Primary button"
             render={(state) =>
@@ -469,7 +469,7 @@ export function DesignSystem({
           />
         </Section>
 
-        <Section number={6} title="UI states">
+        <Section id={`${style.slug}-section-6`} number={6} title="UI states">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StateCard label="Empty">
               <EmptyState

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fontVariables } from "@/app/_fonts";
 import { getStyle, styles } from "@/content/styles";
@@ -11,6 +12,11 @@ const boards = {
   "parisian-morning": parisianMorning,
   "old-hong-kong": oldHongKong,
 };
+
+export async function generateMetadata({ params }: PageProps<"/mood-boards/[style]">): Promise<Metadata> {
+  const style = getStyle((await params).style);
+  return { title: style ? `${style.name} · Mood board` : "Mood board" };
+}
 
 export function generateStaticParams() {
   return styles.map((style) => ({ style: style.slug }));

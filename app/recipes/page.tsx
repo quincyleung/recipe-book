@@ -20,11 +20,11 @@ export default function RecipesPage() {
       style={themeVars(themes[style])}
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
-        <header className="flex flex-col gap-4">
-          <nav>
+        <header className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <nav className="self-end sm:order-2 sm:self-start">
             <ButtonLink href="/">← Hub</ButtonLink>
           </nav>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:order-1">
             <h1 className="ds-display">食譜 Recipe Book</h1>
             <p className="ds-body text-(--ds-muted)">Meals I actually cook, with ingredients and steps in one place.</p>
           </div>

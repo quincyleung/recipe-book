@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import {
   Badge,
   Button,
@@ -50,6 +50,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
   const [step, setStep] = useState<number | null>(null);
   const [awake, setAwake] = useState(false);
   const [servings, setServings] = useState(recipe.servings);
+  const servingsLabel = useId();
   const scaled = { ...recipe, ingredients: scaleIngredients(recipe, servings) };
   // Cooking clock: when "Start cooking" was pressed, and the latest tick.
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -178,8 +179,8 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
               label: <Bilingual zh="材料" en="Ingredients" />,
               content: (
                 <div className="flex flex-col gap-4">
-                  <div role="group" aria-labelledby="servings-label" className="flex items-center gap-3">
-                    <span id="servings-label" className="ds-label text-(--ds-muted)">
+                  <div role="group" aria-labelledby={servingsLabel} className="flex items-center gap-3">
+                    <span id={servingsLabel} className="ds-label text-(--ds-muted)">
                       Servings
                     </span>
                     <Button

@@ -219,3 +219,26 @@
 **Asked:** Remove servings from the recipe list, since they can be adjusted.
 
 **Made:** Recipe cards now show only meal and total time ("Dinner · 25 min"). Servings appear only on the recipe page, where the − / + control changes them and the header follows.
+
+## 2026-10-13: Full check for bugs, and hub button placement
+
+**Asked:** Go through everything and make sure there are no bugs or issues and the UI is smooth. Move "← Hub" to the right, or space it out so it doesn't feel cluttered.
+
+**Made:**
+- **Hub button:** "← Hub" now sits to the right of the "食譜 Recipe Book" title on wider screens, and at the top right, with more space above the title, on phones.
+- **Bugs fixed:** Next 16 keeps up to three visited pages alive (hidden) in the DOM, which surfaced two problems:
+  - Each design system used the same section ids (`#section-4`), so after visiting two of them, "See all recipes" could jump to the hidden page's section and do nothing. Section ids now include the style.
+  - The design system demos all named their radio group "servings", and same-named radios form one group across the document, so a radio on one page could untick one on a hidden page. The names now include the style.
+  - The recipe page's servings label id is now unique per page as well.
+- **Page titles:** each mood board and design system now has its own title ("Greek Summer · Mood board"), not just "Recipe Book".
+
+**Verified with a sweep of all 15 pages** (hub, 3 mood boards, 3 design systems, the recipe list, and 7 recipe pages) at 390px and 1440px in Chrome:
+- No console errors or hydration warnings.
+- No sideways scrolling.
+- Every image loads.
+- No duplicate ids.
+- Every element you can Tab to shows a focus ring.
+- All 15 internal links work.
+- With three pages alive in the DOM there are no duplicate ids, and "See all recipes" scrolls to the right section.
+
+**Known and left as is:** a made-up address like `/recipes/nope` shows the proper "could not be found" page with a noindex tag, but the HTTP status is 200, not 404. Next's docs say this happens because these pages start streaming before the address is checked. A true 404 would need request-time Proxy code, which doesn't fit a static site.

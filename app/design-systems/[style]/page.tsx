@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fontVariables } from "@/app/_fonts";
 import { themes } from "@/app/_ds/themes";
 import { recipes } from "@/content/recipes";
 import { getStyle, styles } from "@/content/styles";
 import { DesignSystem } from "../_components/design-system";
+
+export async function generateMetadata({ params }: PageProps<"/design-systems/[style]">): Promise<Metadata> {
+  const style = getStyle((await params).style);
+  return { title: style ? `${style.name} · Design system` : "Design system" };
+}
 
 export function generateStaticParams() {
   return styles.map((style) => ({ style: style.slug }));
