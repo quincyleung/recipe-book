@@ -213,3 +213,9 @@
 **Asked:** Give both breakfast dishes the same rim color (red) so they're consistent.
 
 **Made:** The overnight oats are now in a white bowl with the same signage-red rim band as the pancake plate, replacing the glass jar's blue-grey rim. Dinners keep their jade band. The rim color now follows the meal: red for breakfast, jade for dinner.
+
+## 2026-10-13: No servings on the cards
+
+**Asked:** Remove servings from the recipe list, since they can be adjusted.
+
+**Made:** Recipe cards now show only meal and total time ("Dinner · 25 min"). Servings appear only on the recipe page, where the − / + control changes them and the header follows.

@@ -480,6 +480,11 @@ function meta(recipe: Recipe) {
   return `${recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · ${recipe.minutes} min · Serves ${recipe.servings}`;
 }
 
+/** Cards leave out servings; the recipe itself lets you change them. */
+function cardMeta(recipe: Recipe) {
+  return `${recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · ${recipe.minutes} min`;
+}
+
 function summary(recipe: Recipe) {
   const items = recipe.ingredients.map((ingredient) => ingredient.item.split(",")[0]);
   return items.length > 3 ? `${items.slice(0, 3).join(", ")} + ${items.length - 3} more` : items.join(", ");
@@ -524,7 +529,7 @@ export function RecipeCard({
             </button>
           )}
         </h3>
-        <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
+        <p className="ds-label text-(--ds-muted)">{cardMeta(recipe)}</p>
         {showSummary && <p className="ds-small pt-0.5 text-(--ds-muted)">{summary(recipe)}</p>}
         {recipe.aheadNote && (
           <div className="pt-1">
