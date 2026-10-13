@@ -7,6 +7,7 @@ import type { Recipe } from "@/content/recipes";
 // meal: jade for dinner, egg-tart yellow for breakfast.
 
 const ink = "#1E1B16";
+const signageRed = "#C8312B";
 const scallionGreen = "#6FA544";
 
 /** Seeded random numbers, so server and browser draw the same scatter. */
@@ -402,11 +403,6 @@ const dishes: Record<string, { plate: boolean; draw: Draw; gradients?: Draw }> =
     plate: false,
     gradients: (u) => (
       <>
-        <radialGradient id={u("glass")} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0.78" stopColor="#DCE8EB" />
-          <stop offset="0.9" stopColor="#F4FAFB" />
-          <stop offset="1" stopColor="#BFD2D8" />
-        </radialGradient>
         <radialGradient id={u("oats")} cx="0.5" cy="0.45" r="0.55">
           <stop offset="0" stopColor="#FCF5E6" />
           <stop offset="1" stopColor="#E7D6B5" />
@@ -420,10 +416,10 @@ const dishes: Record<string, { plate: boolean; draw: Draw; gradients?: Draw }> =
     draw: (u) => (
       <g strokeLinejoin="round">
         <circle cx="117" cy="96" r="60" fill={ink} opacity="0.32" />
-        <circle cx="112" cy="90" r="60" fill={`url(#${u("glass")})`} stroke={ink} strokeWidth="2.4" />
-        <circle cx="112" cy="90" r="55" fill="none" stroke="#A9C0C7" strokeWidth="1.4" />
-        <circle cx="112" cy="90" r="50" fill={`url(#${u("oats")})`} stroke="#B9CBD0" strokeWidth="1.2" />
-        <path d="M70 62 A50 50 0 0 1 120 40" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
+        {/* A white bowl with the same red rim band as the breakfast plates. */}
+        <circle cx="112" cy="90" r="60" fill={`url(#${u("rim")})`} stroke={ink} strokeWidth="2.4" />
+        <circle cx="112" cy="90" r="55" fill="none" stroke={signageRed} strokeWidth="3" />
+        <circle cx="112" cy="90" r="50" fill={`url(#${u("oats")})`} stroke="#E3D8C3" strokeWidth="1.2" />
         <g fill="#E2CB9C" stroke="#C3A672" strokeWidth="0.5">
           {scatter(29, 46, 112, 90, 4, 46).map((s, i) => (
             <ellipse key={i} cx={s.x} cy={s.y} rx="3" ry="1.5" transform={`rotate(${s.turn} ${s.x} ${s.y})`} />
@@ -453,7 +449,7 @@ const dishes: Record<string, { plate: boolean; draw: Draw; gradients?: Draw }> =
 
 const palettes = {
   dinner: { tiles: ["#2E6B54", "#2A644E", "#33735A", "#2C6851"], band: "#2E6B54" },
-  breakfast: { tiles: ["#F2C14E", "#EDB944", "#F5C95C", "#F0BE49"], band: "#C8312B" },
+  breakfast: { tiles: ["#F2C14E", "#EDB944", "#F5C95C", "#F0BE49"], band: signageRed },
 };
 
 /** A drawing of the dish. `fill` crops it to cover its container instead of keeping 4:3. */

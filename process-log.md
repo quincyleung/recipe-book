@@ -207,3 +207,9 @@
 - No console errors.
 
 **Pushed back:** I asked for clearer type hierarchy, a centered clock, and a button-style hub link.
+
+## 2026-10-13: Matching breakfast rims
+
+**Asked:** Give both breakfast dishes the same rim color (red) so they're consistent.
+
+**Made:** The overnight oats are now in a white bowl with the same signage-red rim band as the pancake plate, replacing the glass jar's blue-grey rim. Dinners keep their jade band. The rim color now follows the meal: red for breakfast, jade for dinner.
