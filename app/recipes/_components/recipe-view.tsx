@@ -4,11 +4,11 @@ import { useEffect, useId, useState } from "react";
 import {
   Badge,
   Button,
-  ButtonLink,
   IngredientChecklist,
   SaveButton,
   StepList,
   Tabs,
+  TextLink,
   Toggle,
 } from "@/app/_ds/components";
 import type { Recipe } from "@/content/recipes";
@@ -29,11 +29,6 @@ function stepSeconds(step: string) {
 function clock(ms: number) {
   const total = Math.max(0, Math.ceil(ms / 1000));
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
-}
-
-function took(ms: number) {
-  const minutes = Math.round(ms / 60000);
-  return minutes < 1 ? "under a minute" : minutes === 1 ? "1 minute" : `${minutes} minutes`;
 }
 
 /** Chinese above English on phones, side by side from tablet width up. */
@@ -58,7 +53,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
   // One step countdown at a time, and the step whose countdown just ran out.
   const [timer, setTimer] = useState<{ step: number; endsAt: number } | null>(null);
   const [rang, setRang] = useState<number | null>(null);
-  const [finishedIn, setFinishedIn] = useState<number | null>(null);
+  const [finished, setFinished] = useState(false);
   const last = recipe.steps.length - 1;
 
   useEffect(() => {
@@ -106,14 +101,14 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
       setStartedAt(t);
       setNow(t);
     }
-    setFinishedIn(null);
+    setFinished(false);
     setRang(null);
     setStep(next);
     setTab(STEPS_TAB);
   }
 
   function stopCooking(done: boolean) {
-    setFinishedIn(done && startedAt !== null ? Date.now() - startedAt : null);
+    setFinished(done);
     setStep(null);
     setStartedAt(null);
     setTimer(null);
@@ -131,7 +126,9 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
       {/* flex-1 fills short pages so the cooking bar always sits on the bottom edge. */}
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
         <div className="flex items-center justify-between gap-4">
-          <ButtonLink href="/recipes">← All recipes</ButtonLink>
+          <TextLink href="/recipes" tone="subtle">
+            ← All recipes
+          </TextLink>
           <SaveButton />
         </div>
 
@@ -158,11 +155,6 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
               )}
               <Toggle label="Keep screen awake" on={awake} onChange={setAwake} />
             </div>
-            {finishedIn !== null && (
-              <p role="status" className="ds-title text-(--ds-success)">
-                ✓ Done in {took(finishedIn)}. Enjoy your {recipe.name}.
-              </p>
-            )}
           </div>
           <div className="aspect-[16/9] overflow-hidden rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) shadow-(--ds-shadow-card) md:aspect-[4/3]">
             <DishArt recipe={recipe} fill />
@@ -210,27 +202,34 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
             {
               label: <Bilingual zh="做法" en="Steps" />,
               content: (
-                <StepList
-                  recipe={recipe}
-                  title={null}
-                  current={step}
-                  onCurrentChange={goTo}
-                  controls={false}
-                  action={(i, state) => {
-                    // A countdown for the current step, if it says how long ("4 minutes").
-                    const secs = stepSeconds(recipe.steps[i]);
-                    if (secs === null || state !== "current") return null;
-                    return timer?.step === i ? (
-                      <Button variant="secondary" onClick={() => setTimer(null)}>
-                        Cancel timer
-                      </Button>
-                    ) : (
-                      <Button variant="secondary" onClick={() => startTimer(i, secs)}>
-                        Start {clock(secs * 1000)} timer
-                      </Button>
-                    );
-                  }}
-                />
+                <div className="flex flex-col gap-4">
+                  <StepList
+                    recipe={recipe}
+                    title={null}
+                    current={step}
+                    onCurrentChange={goTo}
+                    controls={false}
+                    action={(i, state) => {
+                      // A countdown for the current step, if it says how long ("4 minutes").
+                      const secs = stepSeconds(recipe.steps[i]);
+                      if (secs === null || state !== "current") return null;
+                      return timer?.step === i ? (
+                        <Button variant="secondary" onClick={() => setTimer(null)}>
+                          Cancel timer
+                        </Button>
+                      ) : (
+                        <Button variant="secondary" onClick={() => startTimer(i, secs)}>
+                          Start {clock(secs * 1000)} timer
+                        </Button>
+                      );
+                    }}
+                  />
+                  {finished && (
+                    <p role="status" className="ds-title text-(--ds-success)">
+                      ✓ Done. Enjoy your {recipe.name}!
+                    </p>
+                  )}
+                </div>
               ),
             },
             {

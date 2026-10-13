@@ -107,9 +107,9 @@ export function SaveButton() {
 const linkTones = {
   default:
     "ds-body text-(--ds-text) underline decoration-(--ds-indicator) decoration-1 underline-offset-4 ds-hover:decoration-2 ds-pressed:text-(--ds-muted)",
-  /** Small and quiet, for secondary navigation such as "← Hub". */
+  /** Small and quiet, in the body face, for back links such as "← Hub". */
   subtle:
-    "ds-label inline-flex min-h-8 items-center text-(--ds-muted) underline-offset-4 ds-hover:text-(--ds-text) ds-hover:underline ds-pressed:text-(--ds-text)",
+    "ds-small inline-flex min-h-8 items-center text-(--ds-muted) underline-offset-4 ds-hover:text-(--ds-text) ds-hover:underline ds-pressed:text-(--ds-text)",
 };
 
 export function TextLink({

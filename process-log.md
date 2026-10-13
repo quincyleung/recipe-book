@@ -283,3 +283,18 @@
 - The full sweep of all 18 pages at 390 and 1440px: no console errors, overflow, broken images, duplicate ids, or missing focus rings.
 
 **Pushed back:** I asked for the hub link to be small and subtle above the title rather than a button beside it.
+
+## 2026-10-13: Quieter back links, done message under the steps
+
+**Asked:**
+- Put the hub link in the body font so it doesn't compete with the title.
+- Make "← All recipes" a plain link without a box, like the list page, because "Start cooking" and "Save recipe" were competing for attention.
+- When the steps are done, show "✓ Done. Enjoy your [dish]!" under the steps.
+
+**Made:**
+- The design system's subtle link tone now uses the Small body role (Noto Serif TC, 14px, muted), with an underline and darker text on hover. "← Hub" on the list and "← All recipes" on recipe pages both use it, so the only boxed buttons at the top of a recipe are Save and Start cooking.
+- The finish message moved from the header to directly under the last step, inside the Steps tab, and now reads "✓ Done. Enjoy your Honey Garlic Salmon!" (no duration). Starting to cook again clears it.
+
+**Verified in Chrome:** both links render in Noto Serif 14px with no border, background, or shadow; "← All recipes" and Save share a center line; the done message sits under the last step; no errors.
+
+**Pushed back:** the agent's boxed back buttons competed with the primary action, so I asked for plain links.
