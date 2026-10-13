@@ -24,8 +24,8 @@ export default function RecipesPage() {
           <nav>
             <TextLink href="/">← Hub</TextLink>
           </nav>
-          <div className="flex flex-col gap-1">
-            <h1 className="ds-heading">食譜 Recipe Book</h1>
+          <div className="flex flex-col gap-2">
+            <h1 className="ds-display">食譜 Recipe Book</h1>
             <p className="ds-body text-(--ds-muted)">Meals I actually cook, with ingredients and steps in one place.</p>
           </div>
         </header>

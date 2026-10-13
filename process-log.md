@@ -115,3 +115,9 @@
 - The hub says the site is built in the Old Hong Kong style.
 - **Verified in Chrome** at 1440px and 390px, with no horizontal overflow and no console errors: search, filters, the empty state and clearing it, opening a recipe, the cooking flow through Finish, the toggle, the checklist, the back button (no page reload), a direct link, and Esc.
 - **Bug found and fixed:** the sheet is reused, so after cooking one recipe to the end, the next one opened scrolled down with its name off-screen. It now resets to the top for every recipe.
+
+## 2026-10-13: Clearer hierarchy on the recipe list
+
+**Asked:** Make the hierarchy clearer: "Recipe Book" larger, in the display font.
+
+**Made:** The page title now uses the display role (Oswald, 56px on desktop and 40px on phones, one line at both), well above the 20px card titles.
