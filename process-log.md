@@ -53,3 +53,11 @@
 - Old Hong Kong uses the plain sans for paragraphs because condensed Oswald is hard to read at length. The Parisian section labels use a darker gold so small text stays legible on ivory.
 
 **Pushed back:** I asked for more photos and for sections like my professor's mood board.
+
+## 2026-10-13: Parisian Morning edits
+
+**Asked:** The Ladurée macarons are too brightly colored for the Parisian mood. Swap je t'aime with the Eiffel Tower in "Where it comes from", because the Eiffel Tower is more important.
+
+**Made:** Removed the macarons photo, so the board now has 29 artifacts (14 collected, 15 made). The Eiffel Tower through the oval window is now a key source ("Take the oval window and the pale morning light"), and je t'aime moved to References.
+
+**Pushed back:** I rejected the agent's macarons pick because it was off-palette, and chose which photo should lead.

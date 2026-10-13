@@ -31,9 +31,9 @@ export const parisianMorning: Board = {
       "Take the gold serif lettering: gold only for the few words that matter.",
     ),
     source(
-      photo("je-taime-handwriting", 736, 736, "Handwritten lines of je t'aime in black ink"),
-      "Je t'aime, in ink",
-      "Take the handwritten script, used once, as a flourish.",
+      photo("oval-window-eiffel", 570, 855, "The Eiffel Tower seen through an oval window"),
+      "The Eiffel Tower, framed",
+      "Take the oval window and the pale morning light: Paris seen from inside, calm and cream.",
     ),
     source(
       photo("haussmann-facade", 736, 1308, "A cream Haussmann building with wrought-iron balconies"),
@@ -49,13 +49,7 @@ export const parisianMorning: Board = {
       url: "https://commons.wikimedia.org/wiki/File:Grand_foyer_of_Op%C3%A9ra_Garnier_02.JPG",
     }),
     photo("carette-strawberries-chocolate", 736, 1307, "Strawberries, whipped cream, and hot chocolate at a café table"),
-    photo("laduree-macarons", 960, 960, "A box of pastel Ladurée macarons", {
-      title: "Ladurée Macaron",
-      author: "leo gonzales",
-      license: "CC BY 2.0",
-      url: "https://commons.wikimedia.org/wiki/File:Ladur%C3%A9e_Macaron.jpg",
-    }),
-    photo("oval-window-eiffel", 570, 855, "The Eiffel Tower seen through an oval window"),
+    photo("je-taime-handwriting", 736, 736, "Handwritten lines of je t'aime in black ink"),
     photo("galerie-vivienne-mosaic", 960, 485, "Galerie Vivienne's glass roof and mosaic floor", {
       title: "Galerie Vivienne, 12 March 2015",
       author: "Benh LIEU SONG",
