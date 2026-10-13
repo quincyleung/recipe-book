@@ -242,3 +242,11 @@
 - With three pages alive in the DOM there are no duplicate ids, and "See all recipes" scrolls to the right section.
 
 **Known and left as is:** a made-up address like `/recipes/nope` shows the proper "could not be found" page with a noindex tag, but the HTTP status is 200, not 404. Next's docs say this happens because these pages start streaming before the address is checked. A true 404 would need request-time Proxy code, which doesn't fit a static site.
+
+## 2026-10-13: No focus ring on click
+
+**Asked:** Fields don't need to show focus when clicked (for example the search box or the Sort select).
+
+**Made:** Browsers treat a clicked text field or select as "focus-visible", so they showed the ring on click. A small `InputModality` component now records on `<html data-modality>` whether the last navigation was Tab or a pointer. Text fields and selects show the focus ring only after Tab; on click they just darken their border. Only Tab counts as keyboard navigation, so typing a search doesn't bring the ring back. Buttons already skipped the ring on click.
+
+**Verified in Chrome:** clicking and typing show no ring, Tabbing in shows the 2px ring, and the keyboard focus sweep still finds a ring on every Tab stop.

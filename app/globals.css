@@ -49,6 +49,19 @@ body {
   }
 }
 
+/*
+ * Focus ring for text fields and selects. Browsers treat a clicked field as
+ * focus-visible, so this only shows the ring after Tab (see InputModality).
+ */
+@custom-variant ds-focus-key {
+  :root[data-modality="keyboard"] &:focus-visible {
+    @slot;
+  }
+  &[data-force="focus"] {
+    @slot;
+  }
+}
+
 @custom-variant ds-pressed {
   &:active:not(:disabled) {
     @slot;

@@ -17,6 +17,10 @@ import type { Recipe } from "@/content/recipes";
 export type Force = "hover" | "focus" | "pressed";
 
 const focusRing = "ds-focus:outline-2 ds-focus:outline-offset-2 ds-focus:outline-(--ds-focus)";
+/** Fields only get the ring when reached with Tab; a click just darkens the border. */
+// outline-none clears the outline style too, so the keyboard ring sets it back to solid.
+const fieldFocusRing =
+  "outline-none ds-focus-key:outline-solid ds-focus-key:outline-2 ds-focus-key:outline-offset-2 ds-focus-key:outline-(--ds-focus)";
 const disabledFill =
   "disabled:cursor-not-allowed disabled:border-transparent disabled:bg-(--ds-disabled-bg) disabled:text-(--ds-disabled-text) disabled:shadow-none";
 const press =
@@ -146,7 +150,7 @@ export function TextField({
         onChange={onChange && ((event) => onChange(event.target.value))}
         data-force={force}
         disabled={disabled}
-        className={`${field} placeholder:text-(--ds-muted) ${focusRing}`}
+        className={`${field} placeholder:text-(--ds-muted) ${fieldFocusRing}`}
       />
     </label>
   );
@@ -170,7 +174,7 @@ export function Select({
         <select
           value={value}
           onChange={onChange && ((event) => onChange(event.target.value))}
-          className={`${field} appearance-none pr-10 ${focusRing}`}
+          className={`${field} appearance-none pr-10 ${fieldFocusRing}`}
         >
           {options.map((option) => (
             <option key={option}>{option}</option>
