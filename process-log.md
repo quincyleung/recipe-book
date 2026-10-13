@@ -32,3 +32,24 @@
 - Checked in Chrome at 1440px and at 390px (in an iframe, because headless Chrome won't make a window that narrow). Fixed order slip text that didn't sit on its ruled lines, a limewash texture too faint to see, and a menu card that wrapped at phone width.
 
 **Pushed back:** The agent committed the mood boards but didn't push. I asked it to always push to GitHub after committing, and AGENTS.md now says so.
+
+## 2026-10-13: More photos, and sections like the professor's example
+
+**Asked:** Add more photos to the mood boards, from the internet or generated. Then, from a screenshot of my professor's mood board, organize mine into sections like his (where it comes from, references, type and color, pieces of UI), without copying it exactly.
+
+**Made:**
+- Added 5 freely licensed photos to each board from Wikimedia Commons, chosen by reviewing contact sheets for color and mood:
+  - Greek Summer: Oia terraces, a white wall above the sea, a Greek salad, a blue fishing boat, a cliffside terrace.
+  - Parisian Morning: the gilded Palais Garnier foyer, Ladurée macarons, Galerie Vivienne's mosaic floor and gilt entrance, a café crème among books.
+  - Old Hong Kong: a neon street at night, milk tea in a Black & White cup, egg tarts, a tram through Chun Yeung Street market, a cha chaan teng order slip in staff shorthand.
+  
+  Each has an author and license credit on its board. Photos were downloaded at 960px with metadata stripped.
+- Reorganized each board into sections:
+  - **Header:** name, tagline, and "evokes", "suits", and "artifacts" notes.
+  - **Where it comes from:** four of my photos, each with a "Take the…" note on what the design borrows from it.
+  - **References:** the other 11 photos, with credits.
+  - **Type and color**, **Texture and shape** (named per style), and **Pieces of UI**: the pieces the agent made.
+- Each board now has 30 artifacts: 15 collected and 15 made. To stay at 30, I cut the weakest made pieces: the 15′ numeral, the olive swatch, and the awning stripes (Greek); the rattan weave, the monogram, and the Cormorant body specimen (Paris); the 下午茶 sign, the mahjong tile, and the made order slip, now replaced by a real one (Hong Kong).
+- Old Hong Kong uses the plain sans for paragraphs because condensed Oswald is hard to read at length. The Parisian section labels use a darker gold so small text stays legible on ivory.
+
+**Pushed back:** I asked for more photos and for sections like my professor's mood board.
