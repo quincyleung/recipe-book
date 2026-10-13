@@ -338,3 +338,23 @@
 - I wanted one language at a time with a switch, not both side by side.
 - I wanted favorites rather than Save, since every recipe here is already "saved".
 - I removed Keep screen awake because phones handle that.
+
+## 2026-10-13: Heart, language toggle, filter titles
+
+**Asked:**
+- Show favorites as something smaller at the top right, or just a heart.
+- Make the English/Chinese switch a toggle, or at least look different from the other buttons.
+- Make the filter titles bigger than the options.
+- Remove the "Shows recipes with any you tick" hint.
+
+**Made:**
+- **Favorite heart:** a small heart in a white round badge with the style's ink outline and hard shadow, at the top right of the card's drawing (32px) and on the list thumbnail's corner (24px), replacing the "♥ Favorite" text badge. It's neon pink from the mood board rather than red, so it doesn't borrow the accent reserved for "Start cooking". Screen readers hear "Favorite" / "最愛".
+- **Language toggle:** "EN [knob] 中文", a track and sliding knob in the design system's toggle shape, instead of two chips, so it looks unlike the page's buttons. The current language is bold. Both languages are equal options, so only the knob moves and the track doesn't change color. It's a `role="switch"` named "中文 (Chinese)", with focus, hover, and pressed states and Space to toggle.
+- **Filter titles:** Meal, Main ingredient, Time, Prep, and Favorites now use the Title role (22px Oswald, full ink), above the 16px options.
+- **Removed** the main-ingredient hint.
+
+**Verified in Chrome:**
+- The heart's size and position on the card and the row.
+- The toggle by click and by Space, in both languages.
+- Filter titles at 22px against 16px options.
+- The full sweep of 18 pages at 390 and 1440px came back clean.

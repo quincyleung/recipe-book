@@ -20,7 +20,6 @@ const en = {
   meal: "Meal",
   meals: { all: "All", breakfast: "Breakfast", dinner: "Dinner" },
   mainIngredient: "Main ingredient",
-  mainIngredientHint: "Shows recipes with any you tick.",
   proteins: { Fish: "Fish", Beef: "Beef", Seafood: "Seafood", Eggs: "Eggs", Dairy: "Dairy", Pork: "Pork" } as Record<
     string,
     string
@@ -41,7 +40,7 @@ const en = {
   makeAhead: "Make ahead",
   favorite: "♡ Favorite",
   favorited: "♥ Favorite",
-  favoriteBadge: "♥ Favorite",
+  favoriteMark: "Favorite",
   minutes: (n: number) => `${n} min`,
   serves: (n: number) => `Serves ${n}`,
   startCooking: "Start cooking",
@@ -89,7 +88,6 @@ export const ui: Record<Lang, Strings> = {
     meal: "餐類",
     meals: { all: "全部", breakfast: "早餐", dinner: "晚餐" },
     mainIngredient: "主要材料",
-    mainIngredientHint: "顯示含任何已選材料的食譜。",
     proteins: { Fish: "魚", Beef: "牛肉", Seafood: "海鮮", Eggs: "蛋", Dairy: "奶類", Pork: "豬肉" } as Record<
       string,
       string
@@ -110,7 +108,7 @@ export const ui: Record<Lang, Strings> = {
     makeAhead: "需預先準備",
     favorite: "♡ 加入最愛",
     favorited: "♥ 已加入最愛",
-    favoriteBadge: "♥ 最愛",
+    favoriteMark: "最愛",
     minutes: (n: number) => `${n}分鐘`,
     serves: (n: number) => `${n}人份`,
     startCooking: "開始煮",

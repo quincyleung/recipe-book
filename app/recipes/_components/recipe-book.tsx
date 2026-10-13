@@ -17,6 +17,7 @@ import {
 import { localize, mealName } from "@/content/i18n";
 import type { Meal, Recipe } from "@/content/recipes";
 import { DishArt } from "./dish-art";
+import { FavoriteMark } from "./favorite-mark";
 import { LanguageToggle } from "./language-toggle";
 import { useRecipeBook } from "./recipe-book-context";
 
@@ -45,11 +46,10 @@ function matches(recipe: Recipe, shown: Recipe, query: string) {
     .some((text) => text.toLowerCase().includes(q));
 }
 
-function FilterGroup({ legend, hint, children }: { legend: string; hint?: string; children: ReactNode }) {
+function FilterGroup({ legend, children }: { legend: string; children: ReactNode }) {
   return (
     <fieldset className="flex flex-col gap-1">
-      <legend className="ds-label mb-1 text-(--ds-muted)">{legend}</legend>
-      {hint && <p className="ds-small text-(--ds-muted)">{hint}</p>}
+      <legend className="ds-title mb-1 text-(--ds-text)">{legend}</legend>
       {children}
     </fieldset>
   );
@@ -90,16 +90,9 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
     .sort((a, b) => sorters[sort](a.text, b.text));
 
   const metaFor = (recipe: Recipe) => `${mealName(recipe.meal, lang)} · ${t.minutes(recipe.minutes)}`;
-  const badgesFor = (recipe: Recipe) => {
-    const favorite = favorites.includes(recipe.slug);
-    if (!recipe.aheadNote && !favorite) return null;
-    return (
-      <>
-        {recipe.aheadNote && <Badge>{t.makeAhead}</Badge>}
-        {favorite && <Badge tone="neutral">{t.favoriteBadge}</Badge>}
-      </>
-    );
-  };
+  const badgesFor = (recipe: Recipe) => (recipe.aheadNote ? <Badge>{t.makeAhead}</Badge> : null);
+  const heartFor = (recipe: Recipe, small = false) =>
+    favorites.includes(recipe.slug) ? <FavoriteMark label={t.favoriteMark} small={small} /> : null;
 
   // On phones the panel sits above the results; close it and take you to them.
   function showResults() {
@@ -176,7 +169,7 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
           className={`${filtersOpen ? "flex" : "hidden"} flex-col gap-6 rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface) p-4 shadow-(--ds-shadow-card) lg:sticky lg:top-6 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:flex lg:self-start`}
         >
           <div className="flex flex-col gap-2">
-            <p id="meal-label" className="ds-label text-(--ds-muted)">
+            <p id="meal-label" className="ds-title text-(--ds-text)">
               {t.meal}
             </p>
             <div role="group" aria-labelledby="meal-label" className="flex flex-wrap gap-2">
@@ -187,7 +180,7 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
               ))}
             </div>
           </div>
-          <FilterGroup legend={t.mainIngredient} hint={t.mainIngredientHint}>
+          <FilterGroup legend={t.mainIngredient}>
             {proteins.map((protein) => (
               <Checkbox
                 key={protein}
@@ -264,6 +257,7 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
                     media={<DishArt recipe={text} label={t.drawingOf(text.name)} />}
                     meta={metaFor(recipe)}
                     badges={badgesFor(recipe)}
+                    corner={heartFor(recipe)}
                     showSummary
                   />
                 </li>
@@ -276,6 +270,7 @@ export function RecipeBook({ recipes }: { recipes: Recipe[] }) {
               thumb={(recipe) => <DishArt recipe={recipe} label={t.drawingOf(recipe.name)} />}
               metaFor={metaFor}
               badgesFor={badgesFor}
+              markerFor={(recipe) => heartFor(recipe, true)}
             />
           )}
         </section>

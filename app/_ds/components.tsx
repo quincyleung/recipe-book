@@ -520,9 +520,12 @@ export function RecipeCard({
   showSummary = false,
   meta: metaText,
   badges,
+  corner,
 }: {
   recipe: Recipe;
   force?: Force;
+  /** A small marker over the picture's top-right corner, such as a favorite heart. */
+  corner?: ReactNode;
   /** Replaces the default "Dinner · 20 min" line, for example in another language. */
   meta?: string;
   /** Replaces the default "Make ahead" badge. */
@@ -541,8 +544,11 @@ export function RecipeCard({
       data-force={force}
       className="relative flex flex-col gap-3 rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) bg-(--ds-surface) p-3 shadow-(--ds-shadow-card) transition-[border-color,translate,scale] ds-hover:border-(--ds-control) ds-pressed:scale-(--ds-press-scale) has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--ds-focus) data-[force=focus]:outline-2 data-[force=focus]:outline-offset-2 data-[force=focus]:outline-(--ds-focus)"
     >
-      <div aria-hidden className="overflow-hidden rounded-(--ds-radius-field)">
-        {media ?? <div className="aspect-[4/3]" style={{ background: "var(--ds-art)" }} />}
+      <div className="relative">
+        <div aria-hidden className="overflow-hidden rounded-(--ds-radius-field)">
+          {media ?? <div className="aspect-[4/3]" style={{ background: "var(--ds-art)" }} />}
+        </div>
+        {corner && <div className="pointer-events-none absolute top-2 right-2">{corner}</div>}
       </div>
       <div className="flex flex-col gap-1 px-1 pb-1">
         <h3 className="ds-title text-(--ds-text)">
@@ -576,8 +582,11 @@ export function ListRows({
   thumb,
   metaFor,
   badgesFor,
+  markerFor,
 }: {
   recipes: Recipe[];
+  /** A small marker on the thumbnail's top-right corner, such as a favorite heart. */
+  markerFor?: (recipe: Recipe) => ReactNode;
   /** Replaces the default "Dinner · 20 min" line. */
   metaFor?: (recipe: Recipe) => string;
   /** Replaces the default "Make ahead" badge. */
@@ -595,8 +604,13 @@ export function ListRows({
         const content = (
           <>
             {thumb && (
-              <span aria-hidden className="w-16 shrink-0 overflow-hidden rounded-(--ds-radius-check) sm:w-20">
-                {thumb(recipe)}
+              <span className="relative w-16 shrink-0 sm:w-20">
+                <span aria-hidden className="block overflow-hidden rounded-(--ds-radius-check)">
+                  {thumb(recipe)}
+                </span>
+                {markerFor?.(recipe) && (
+                  <span className="pointer-events-none absolute -top-1.5 -right-1.5">{markerFor(recipe)}</span>
+                )}
               </span>
             )}
             <span className="flex min-w-0 flex-1 flex-col gap-0.5">
