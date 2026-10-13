@@ -3,7 +3,7 @@ import type { Ingredient, Recipe } from "@/content/recipes";
 // Scales ingredient amounts like "2 fillets", "¼ cup", "250 g", or "½" to a new
 // number of servings. Amounts without a number ("pinch") stay as they are.
 
-const glyphs: Record<string, number> = { "⅛": 1 / 8, "¼": 1 / 4, "⅓": 1 / 3, "½": 1 / 2, "⅔": 2 / 3, "¾": 3 / 4 };
+const glyphs: Record<string, number> = { "⅛": 1 / 8, "⅙": 1 / 6, "¼": 1 / 4, "⅓": 1 / 3, "½": 1 / 2, "⅔": 2 / 3, "¾": 3 / 4 };
 const fractions = Object.entries(glyphs).map(([glyph, value]) => ({ glyph, value }));
 
 /** Words that change between one and many, in amounts ("fillets") and items ("bell peppers"). */
@@ -18,10 +18,12 @@ const nouns: [string, string][] = [
   ["bell pepper", "bell peppers"],
   ["egg", "eggs"],
   ["strawberry", "strawberries"],
+  ["slice", "slices"],
+  ["cup", "cups"],
 ];
 
 function parse(amount: string) {
-  const match = amount.match(/^(\d+(?:\.\d+)?)?\s*([⅛¼⅓½⅔¾])?\s*(.*)$/);
+  const match = amount.match(/^(\d+(?:\.\d+)?)?\s*([⅛⅙¼⅓½⅔¾])?\s*(.*)$/);
   if (!match || (!match[1] && !match[2])) return null;
   return { qty: (match[1] ? Number(match[1]) : 0) + (match[2] ? glyphs[match[2]] : 0), unit: match[3] };
 }
@@ -35,8 +37,9 @@ function formatQty(qty: number, unit: string) {
     rest = 0;
   }
   if (rest < 0.06) return String(whole);
-  const near = fractions.find((f) => Math.abs(f.value - rest) < 0.05);
-  if (!near) return String(Math.round(qty * 10) / 10);
+  // The closest common fraction, if one is close enough.
+  const near = fractions.reduce((best, f) => (Math.abs(f.value - rest) < Math.abs(best.value - rest) ? f : best));
+  if (Math.abs(near.value - rest) >= 0.05) return String(Math.round(qty * 10) / 10);
   return whole ? `${whole}${near.glyph}` : near.glyph;
 }
 

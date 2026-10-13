@@ -445,6 +445,151 @@ const dishes: Record<string, { plate: boolean; draw: Draw; gradients?: Draw }> =
       </g>
     ),
   },
+  "tamago-sando": {
+    plate: true,
+    gradients: (u) => (
+      <radialGradient id={u("eggsalad")} cx="0.5" cy="0.5" r="0.6">
+        <stop offset="0" stopColor="#FBE7A0" />
+        <stop offset="1" stopColor="#F0C24A" />
+      </radialGradient>
+    ),
+    draw: (u) => (
+      <g strokeLinejoin="round">
+        {[
+          [62, 61, -7, 41],
+          [114, 60, 6, 43],
+        ].map(([x, y, turn, seed]) => (
+          <g key={x} transform={`translate(${x} ${y}) rotate(${turn} 23 30)`}>
+            <rect x="3" y="4" width="46" height="60" rx="5" fill={ink} opacity="0.25" />
+            <rect width="46" height="60" rx="5" fill="#FFF9EE" stroke={ink} strokeWidth="2.2" />
+            <path
+              d="M0 13 C9 10 17 15 25 12 C33 9 40 14 46 12 L46 48 C38 50 30 45 22 48 C14 51 7 46 0 48 Z"
+              fill={`url(#${u("eggsalad")})`}
+              stroke="#C9952C"
+              strokeWidth="1"
+            />
+            <g fill="#FFFDF4" stroke="#E2D3A6" strokeWidth="0.6">
+              {Array.from({ length: 10 }, (_, i) => {
+                const rand = seeded(seed + i);
+                const cx = r1(5 + rand() * 36);
+                const cy = r1(17 + rand() * 26);
+                return <path key={i} d={`M${cx} ${cy} l3 -1.4 l1.6 2.6 l-2.4 1.8 l-2.6 -0.8 z`} />;
+              })}
+            </g>
+            <g fill="#E3A92C" opacity="0.7">
+              {[
+                [9, 30],
+                [21, 22],
+                [33, 36],
+                [40, 24],
+                [16, 41],
+                [28, 30],
+              ].map(([cx, cy]) => (
+                <circle key={`${cx}${cy}`} cx={cx} cy={cy} r="1.1" />
+              ))}
+            </g>
+            <g fill="#EDE2C8">
+              {[
+                [8, 5],
+                [20, 8],
+                [33, 5],
+                [40, 8],
+                [12, 53],
+                [26, 55],
+                [37, 53],
+              ].map(([cx, cy]) => (
+                <circle key={`${cx}${cy}`} cx={cx} cy={cy} r="0.9" />
+              ))}
+            </g>
+          </g>
+        ))}
+      </g>
+    ),
+  },
+  "char-siu-fried-rice": {
+    plate: true,
+    draw: () => (
+      <g strokeLinejoin="round">
+        <path
+          d="M66 92 C62 70 84 54 112 56 C140 54 162 70 160 94 C160 116 138 128 112 126 C86 128 68 114 66 92Z"
+          fill="#EFD19B"
+          stroke={ink}
+          strokeWidth="2"
+        />
+        <g fill="#F8E6BC" stroke="#C9A160" strokeWidth="0.55">
+          {scatter(41, 150, 113, 91, 2, 44).map((g, i) => (
+            <ellipse key={i} cx={g.x} cy={g.y} rx="2.7" ry="1.2" transform={`rotate(${g.turn} ${g.x} ${g.y})`} />
+          ))}
+        </g>
+        <g fill="#F7D467" stroke="#D3A12C" strokeWidth="0.6">
+          {scatter(43, 10, 113, 91, 6, 38).map((g, i) => (
+            <path key={i} d={`M${g.x} ${g.y} q4 -3 7 0 q-1 4 -5 4 q-3 0 -2 -4z`} transform={`rotate(${g.turn} ${g.x} ${g.y})`} />
+          ))}
+        </g>
+        {scatter(47, 15, 113, 91, 4, 38).map((g, i) => (
+          <g key={i} transform={`rotate(${g.turn} ${g.x} ${g.y})`}>
+            <rect x={g.x - 4} y={g.y - 4} width="8" height="8" rx="1.6" fill="#A8361F" stroke={ink} strokeWidth="1" />
+            <rect x={g.x - 2.2} y={g.y - 2.2} width="4.4" height="4.4" rx="1" fill="#E99A7E" />
+          </g>
+        ))}
+        <g>
+          {scatter(53, 12, 113, 91, 4, 40).map((g, i) => (
+            <g key={i}>
+              <circle cx={g.x} cy={g.y} r="3.1" fill="#72B04A" stroke="#3D7226" strokeWidth="0.9" />
+              <circle cx={g.x - 0.9} cy={g.y - 0.9} r="0.9" fill="#C7E8A9" />
+            </g>
+          ))}
+        </g>
+        <Scallions at={[[96, 74], [132, 104], [124, 70], [92, 106], [140, 84]]} />
+      </g>
+    ),
+  },
+  "oat-banana-bread": {
+    plate: true,
+    gradients: (u) => (
+      <linearGradient id={u("crumb")} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#B87A3B" />
+        <stop offset="1" stopColor="#965A28" />
+      </linearGradient>
+    ),
+    draw: (u) => (
+      <g strokeLinejoin="round">
+        {[
+          [62, 62, -11, 61],
+          [104, 58, 9, 67],
+        ].map(([x, y, turn, seed]) => {
+          const rand = seeded(seed);
+          return (
+            <g key={x} transform={`translate(${x} ${y}) rotate(${turn} 30 26)`}>
+              <path d="M3 58 L3 16 C3 6 14 -1 33 -1 C52 -1 63 6 63 16 L63 58 Q63 61 60 61 L6 61 Q3 61 3 58Z" fill={ink} opacity="0.25" />
+              <path
+                d="M0 54 L0 12 C0 2 11 -5 30 -5 C49 -5 60 2 60 12 L60 54 Q60 57 57 57 L3 57 Q0 57 0 54Z"
+                fill="#4E2810"
+                stroke={ink}
+                strokeWidth="2.2"
+              />
+              <path d="M3 54 L3 14 C3 7 12 3 30 3 C48 3 57 7 57 14 L57 54 Z" fill={`url(#${u("crumb")})`} />
+              <path d="M14 -2 C21 1 36 1 45 -2" fill="none" stroke="#8E5326" strokeWidth="2" strokeLinecap="round" />
+              <g fill="#5A3013" opacity="0.7">
+                {Array.from({ length: 10 }, (_, i) => {
+                  const cx = r1(8 + rand() * 42);
+                  const cy = r1(10 + rand() * 38);
+                  return <path key={i} d={`M${cx} ${cy} q3 -2.5 7 -0.5 q-3 2.5 -7 0.5z`} />;
+                })}
+              </g>
+              <g fill="#D7B07A" stroke="#9C6B37" strokeWidth="0.5">
+                {Array.from({ length: 16 }, (_, i) => {
+                  const cx = r1(9 + rand() * 42);
+                  const cy = r1(8 + rand() * 40);
+                  return <ellipse key={i} cx={cx} cy={cy} rx="2" ry="1" transform={`rotate(${Math.round(rand() * 180)} ${cx} ${cy})`} />;
+                })}
+              </g>
+            </g>
+          );
+        })}
+      </g>
+    ),
+  },
 };
 
 const palettes = {

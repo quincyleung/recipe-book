@@ -104,13 +104,27 @@ export function SaveButton() {
   );
 }
 
-export function TextLink({ href, force, children }: { href: string; force?: Force; children: ReactNode }) {
+const linkTones = {
+  default:
+    "ds-body text-(--ds-text) underline decoration-(--ds-indicator) decoration-1 underline-offset-4 ds-hover:decoration-2 ds-pressed:text-(--ds-muted)",
+  /** Small and quiet, for secondary navigation such as "← Hub". */
+  subtle:
+    "ds-label inline-flex min-h-8 items-center text-(--ds-muted) underline-offset-4 ds-hover:text-(--ds-text) ds-hover:underline ds-pressed:text-(--ds-text)",
+};
+
+export function TextLink({
+  href,
+  tone = "default",
+  force,
+  children,
+}: {
+  href: string;
+  tone?: keyof typeof linkTones;
+  force?: Force;
+  children: ReactNode;
+}) {
   return (
-    <Link
-      href={href}
-      data-force={force}
-      className={`ds-body text-(--ds-text) underline decoration-(--ds-indicator) decoration-1 underline-offset-4 ds-hover:decoration-2 ds-pressed:text-(--ds-muted) ${focusRing}`}
-    >
+    <Link href={href} data-force={force} className={`${linkTones[tone]} ${focusRing}`}>
       {children}
     </Link>
   );

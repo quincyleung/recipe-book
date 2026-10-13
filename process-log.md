@@ -258,3 +258,28 @@
 **Made:** On phones the hub button sits above the title on the left. From tablet width up it sits to the left of "食譜 Recipe Book", vertically centered on the title's first line (measured: 70px vs 69px at 1440, 68px vs 64px at 768).
 
 **Pushed back:** I preferred the hub button on the left over the agent's top-right placement.
+
+## 2026-10-13: Three more recipes, a quieter header
+
+**Asked:**
+- Add Tamago Sando, Char Siu Fried Rice, and Oat Banana Bread.
+- Remove "Meals I actually cook…" under the title.
+- Make the hub link small and subtle above the title instead of a button on the left.
+
+**Made:**
+- **Three recipes,** with ingredients, steps, and notes the agent drafted for me to check:
+  - Tamago Sando: breakfast, eggs, 25 min, serves 2.
+  - Char Siu Fried Rice: dinner, pork and eggs, 20 min, serves 2, make ahead (day-old rice).
+  - Oat Banana Bread: breakfast, eggs, 75 min including baking and cooling, 8 slices.
+- **New drawings in the same style:**
+  - Two tamago sando halves with a thick egg layer.
+  - Golden fried rice with diced char siu, peas, egg, and scallions.
+  - Two banana bread slices with a dark domed crust and a moist crumb.
+- **Filters and servings:** Pork now appears as a main ingredient, and "30 min or less" leaves out the banana bread. Steps that name a time get timers (10:00 for the eggs, 50:00 bake, 15:00 cool), and the oven-temperature step gets none. Servings now knows "slices" and "cups", picks the closest fraction instead of the first close one, and supports ⅙ (half of ⅓ cup honey is now ⅙ cup, not ⅛).
+- **Header:** removed the subtitle. "← Hub" is now a small, muted label-style link above the title (a new `subtle` tone on the design system's `TextLink`). It darkens and underlines on hover, gets the focus ring on Tab, and keeps a 32px-tall tap area.
+
+**Verified in Chrome:**
+- The filters, timers, and servings on all three new recipes.
+- The full sweep of all 18 pages at 390 and 1440px: no console errors, overflow, broken images, duplicate ids, or missing focus rings.
+
+**Pushed back:** I asked for the hub link to be small and subtle above the title rather than a button beside it.

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ButtonLink } from "@/app/_ds/components";
+import { TextLink } from "@/app/_ds/components";
 import { themeVars, themes } from "@/app/_ds/themes";
 import { fontVariables } from "@/app/_fonts";
 import { recipes } from "@/content/recipes";
@@ -20,15 +20,13 @@ export default function RecipesPage() {
       style={themeVars(themes[style])}
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
-        {/* Hub button above the title on phones, to its left (centered on the title line) from tablet width up. */}
-        <header className="flex flex-col items-start gap-5 sm:flex-row sm:gap-6">
-          <nav className="sm:mt-1.5 lg:mt-2">
-            <ButtonLink href="/">← Hub</ButtonLink>
+        <header className="flex flex-col items-start gap-1">
+          <nav>
+            <TextLink href="/" tone="subtle">
+              ← Hub
+            </TextLink>
           </nav>
-          <div className="flex flex-col gap-2">
-            <h1 className="ds-display">食譜 Recipe Book</h1>
-            <p className="ds-body text-(--ds-muted)">Meals I actually cook, with ingredients and steps in one place.</p>
-          </div>
+          <h1 className="ds-display">食譜 Recipe Book</h1>
         </header>
         <RecipeBook recipes={recipes} />
       </div>
