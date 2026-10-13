@@ -298,3 +298,43 @@
 **Verified in Chrome:** both links render in Noto Serif 14px with no border, background, or shadow; "← All recipes" and Save share a center line; the done message sits under the last step; no errors.
 
 **Pushed back:** the agent's boxed back buttons competed with the primary action, so I asked for plain links.
+
+## 2026-10-13: Language switch, favorites, and review fixes
+
+**Asked (after the browser review):**
+- Fix the uneven meal chips, in English only, and add a switch at the top for English or Cantonese instead of showing both languages.
+- Fix the confusing filter wording (finding 4) and the 200 status on made-up addresses (finding 5).
+- Say "Show all" rather than "Show 10 recipes".
+- Replace Save with a favorite and a filter for it.
+- Remove "Keep screen awake" and put Favorite in its place.
+- Center the done message.
+
+**Made:**
+- **Language switch (EN | 中文)** at the top right of the list and every recipe page, in place of the side-by-side bilingual labels.
+  - It switches every label, plus the dish names, ingredients, steps, notes, and make-ahead notes, written in Hong Kong Traditional Chinese (`content/i18n.ts`). For example: 叉燒炒飯, 士多啤梨隔夜燕麥, 滑蛋蝦仁.
+  - Amounts are scaled in English and then shown with Chinese units and measure words ("1½杯 凍白飯", "1隻 雞蛋", "少許"), so servings work in both languages. Timers still read times from the English steps.
+  - Search matches both languages.
+  - The page's `lang` follows the choice, for screen readers.
+  - The choice is shared across the recipe pages through a `/recipes` layout, but nothing is saved, so it resets on reload.
+- **Meal chips** read "All / Breakfast / Dinner". Measured, the three chips needed 256px and the sidebar gave 252px, so they wrapped. The sidebar is now 19rem and the chips use a new compact size, so they fit on one row with room to spare at 1024 to 1440px, in both languages.
+- **Filter wording:** the make-ahead group is now "Prep" ("Any prep / Ready tonight / Make ahead"), so there's no lone "Any" under "Any time". Main ingredient has a hint: "Shows recipes with any you tick."
+- **Real 404s:** a small `proxy.ts` (Next 16's Proxy) checks /mood-boards, /design-systems, and /recipes addresses against the known styles and recipes, and sends anything else to a path with no page. `/recipes/nope` now returns 404, while real pages return 200. It only routes; there's no data or backend.
+- **"Show all"** on the phone filter button when every recipe matches; "Show 4 recipes" otherwise.
+- **Favorites instead of Save:**
+  - A "♡ Favorite" toggle sits next to Start cooking, where Keep screen awake was. It's secondary, so Start cooking stays the only red button.
+  - Favorited recipes get a "♥ Favorite" badge on their card and row, and there's a "Favorites only" filter, counted in the Filters total.
+  - Shared between pages, not saved. The design system's demo button and success state now say Favorite too.
+- **Removed** "Keep screen awake" and its wake-lock code.
+- **The done message** is centered under the steps.
+
+**Verified in Chrome:**
+- Favoriting, the badge, and the filter.
+- Both languages on the list and a recipe page: filters, search in either language, sort, list view, servings in Chinese, a timer, and Finish.
+- "Show all" / "Show 4 recipes".
+- Status codes for real and made-up addresses.
+- The full sweep of 18 pages at 390 and 1440px: no console errors, overflow, broken images or links, duplicate ids, or missing focus rings.
+
+**Pushed back:**
+- I wanted one language at a time with a switch, not both side by side.
+- I wanted favorites rather than Save, since every recipe here is already "saved".
+- I removed Keep screen awake because phones handle that.

@@ -1,18 +1,12 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import {
-  Badge,
-  Button,
-  IngredientChecklist,
-  SaveButton,
-  StepList,
-  Tabs,
-  TextLink,
-  Toggle,
-} from "@/app/_ds/components";
+import { Badge, Button, IngredientChecklist, StepList, Tabs, TextLink } from "@/app/_ds/components";
+import { localize, mealName } from "@/content/i18n";
 import type { Recipe } from "@/content/recipes";
 import { DishArt } from "./dish-art";
+import { LanguageToggle } from "./language-toggle";
+import { useRecipeBook } from "./recipe-book-context";
 import { scaleIngredients } from "./servings";
 
 const MAX_SERVINGS = 12;
@@ -31,22 +25,15 @@ function clock(ms: number) {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
 
-/** Chinese above English on phones, side by side from tablet width up. */
-function Bilingual({ zh, en }: { zh: string; en: string }) {
-  return (
-    <>
-      <span className="block sm:inline">{zh}</span> {en}
-    </>
-  );
-}
-
 export function RecipeView({ recipe }: { recipe: Recipe }) {
+  const { lang, t, favorites, toggleFavorite } = useRecipeBook();
   const [tab, setTab] = useState(0);
   const [step, setStep] = useState<number | null>(null);
-  const [awake, setAwake] = useState(false);
   const [servings, setServings] = useState(recipe.servings);
   const servingsLabel = useId();
-  const scaled = { ...recipe, ingredients: scaleIngredients(recipe, servings) };
+  // Scale in English (where units are known), then show it in the chosen language.
+  const text = localize({ ...recipe, ingredients: scaleIngredients(recipe, servings) }, lang);
+  const favorite = favorites.includes(recipe.slug);
   // Cooking clock: when "Start cooking" was pressed, and the latest tick.
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [now, setNow] = useState(0);
@@ -59,9 +46,9 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
   useEffect(() => {
     if (startedAt === null && timer === null) return;
     const id = setInterval(() => {
-      const t = Date.now();
-      setNow(t);
-      if (timer && t >= timer.endsAt) {
+      const tick = Date.now();
+      setNow(tick);
+      if (timer && tick >= timer.endsAt) {
         setTimer(null);
         setRang(timer.step);
         navigator.vibrate?.([200, 100, 200]);
@@ -70,36 +57,11 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
     return () => clearInterval(id);
   }, [startedAt, timer]);
 
-  // Hold a screen wake lock while the toggle is on. Browsers drop it when the
-  // tab is hidden, so take it again when the page comes back.
-  useEffect(() => {
-    if (!awake) return;
-    let lock: WakeLockSentinel | null = null;
-    let cancelled = false;
-    const acquire = async () => {
-      try {
-        const next = (await navigator.wakeLock?.request("screen")) ?? null;
-        if (cancelled) void next?.release();
-        else lock = next;
-      } catch {
-        // Not supported or not allowed: the toggle still shows the choice.
-      }
-    };
-    const onVisible = () => document.visibilityState === "visible" && void acquire();
-    void acquire();
-    document.addEventListener("visibilitychange", onVisible);
-    return () => {
-      cancelled = true;
-      document.removeEventListener("visibilitychange", onVisible);
-      void lock?.release();
-    };
-  }, [awake]);
-
   function goTo(next: number) {
     if (startedAt === null) {
-      const t = Date.now();
-      setStartedAt(t);
-      setNow(t);
+      const tick = Date.now();
+      setStartedAt(tick);
+      setNow(tick);
     }
     setFinished(false);
     setRang(null);
@@ -121,63 +83,66 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
     setTimer({ step: forStep, endsAt: now + secs * 1000 });
   }
 
+  const proteins = recipe.proteins.map((p) => t.proteins[p] ?? p).join(lang === "zh" ? "、" : ", ");
+
   return (
     <>
       {/* flex-1 fills short pages so the cooking bar always sits on the bottom edge. */}
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
         <div className="flex items-center justify-between gap-4">
           <TextLink href="/recipes" tone="subtle">
-            ← All recipes
+            {t.allRecipes}
           </TextLink>
-          <SaveButton />
+          <LanguageToggle />
         </div>
 
         <header className="grid gap-6 md:grid-cols-[minmax(0,1fr)_18rem] md:items-start lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="flex flex-col gap-3">
-            <h1 className="ds-display">{recipe.name}</h1>
+            <h1 className="ds-display">{text.name}</h1>
             <p className="ds-label text-(--ds-muted)">
-              {recipe.meal === "breakfast" ? "早餐 Breakfast" : "晚餐 Dinner"} · {recipe.minutes} min · Serves{" "}
-              {servings} · {recipe.proteins.join(", ")}
+              {mealName(recipe.meal, lang)} · {t.minutes(recipe.minutes)} · {t.serves(servings)} · {proteins}
             </p>
-            {recipe.aheadNote && (
+            {text.aheadNote && (
               <p className="flex flex-wrap items-center gap-2">
-                <Badge>Make ahead</Badge>
-                <span className="ds-body text-(--ds-muted)">{recipe.aheadNote}</span>
+                <Badge>{t.makeAhead}</Badge>
+                <span className="ds-body text-(--ds-muted)">{text.aheadNote}</span>
               </p>
             )}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-2">
               {step === null ? (
-                <Button onClick={() => goTo(0)}>Start cooking</Button>
+                <Button onClick={() => goTo(0)}>{t.startCooking}</Button>
               ) : (
                 <Button variant="secondary" onClick={() => stopCooking(false)}>
-                  Stop cooking
+                  {t.stopCooking}
                 </Button>
               )}
-              <Toggle label="Keep screen awake" on={awake} onChange={setAwake} />
+              <Button variant="secondary" selected={favorite} onClick={() => toggleFavorite(recipe.slug)}>
+                {favorite ? t.favorited : t.favorite}
+              </Button>
             </div>
           </div>
           <div className="aspect-[16/9] overflow-hidden rounded-(--ds-radius-card) border-(length:--ds-border-width) border-(--ds-card-border) shadow-(--ds-shadow-card) md:aspect-[4/3]">
-            <DishArt recipe={recipe} fill />
+            <DishArt recipe={text} fill label={t.drawingOf(text.name)} />
           </div>
         </header>
 
         <Tabs
-          label="Recipe"
+          label={t.recipe}
           active={tab}
           onActiveChange={setTab}
           fill
           tabs={[
             {
-              label: <Bilingual zh="材料" en="Ingredients" />,
+              label: t.ingredients,
               content: (
                 <div className="flex flex-col gap-4">
                   <div role="group" aria-labelledby={servingsLabel} className="flex items-center gap-3">
                     <span id={servingsLabel} className="ds-label text-(--ds-muted)">
-                      Servings
+                      {t.servings}
                     </span>
                     <Button
                       variant="secondary"
-                      iconLabel="Fewer servings"
+                      iconLabel={t.fewer}
                       disabled={servings <= 1}
                       onClick={() => setServings(servings - 1)}
                     >
@@ -188,55 +153,57 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
                     </output>
                     <Button
                       variant="secondary"
-                      iconLabel="More servings"
+                      iconLabel={t.more}
                       disabled={servings >= MAX_SERVINGS}
                       onClick={() => setServings(servings + 1)}
                     >
                       +
                     </Button>
                   </div>
-                  <IngredientChecklist recipe={scaled} title={null} />
+                  <IngredientChecklist recipe={text} title={null} readyLabel={t.ready} />
                 </div>
               ),
             },
             {
-              label: <Bilingual zh="做法" en="Steps" />,
+              label: t.steps,
               content: (
                 <div className="flex flex-col gap-4">
                   <StepList
-                    recipe={recipe}
+                    recipe={text}
                     title={null}
                     current={step}
                     onCurrentChange={goTo}
                     controls={false}
+                    progressLabel={(current, total) => (current === null ? t.stepCount(total) : t.stepOf(current + 1, total))}
+                    doneLabel={t.doneStep}
                     action={(i, state) => {
-                      // A countdown for the current step, if it says how long ("4 minutes").
+                      // A countdown for the current step, if it says how long. Times come from the English steps.
                       const secs = stepSeconds(recipe.steps[i]);
                       if (secs === null || state !== "current") return null;
                       return timer?.step === i ? (
                         <Button variant="secondary" onClick={() => setTimer(null)}>
-                          Cancel timer
+                          {t.cancelTimer}
                         </Button>
                       ) : (
                         <Button variant="secondary" onClick={() => startTimer(i, secs)}>
-                          Start {clock(secs * 1000)} timer
+                          {t.startTimer(clock(secs * 1000))}
                         </Button>
                       );
                     }}
                   />
                   {finished && (
-                    <p role="status" className="ds-title text-(--ds-success)">
-                      ✓ Done. Enjoy your {recipe.name}!
+                    <p role="status" className="ds-title py-2 text-center text-(--ds-success)">
+                      {t.done(text.name)}
                     </p>
                   )}
                 </div>
               ),
             },
             {
-              label: <Bilingual zh="筆記" en="Notes" />,
+              label: t.notes,
               content: (
                 <ul className="flex flex-col gap-3">
-                  {recipe.notes.map((note) => (
+                  {text.notes.map((note) => (
                     <li key={note} className="ds-body flex gap-3">
                       <span aria-hidden className="text-(--ds-muted)">
                         —
@@ -255,18 +222,18 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
         <div className="sticky bottom-0 z-10 border-t-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface)">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-8 md:flex-row md:items-center md:gap-6">
             <p className="ds-label text-center text-(--ds-muted) md:flex-1 md:text-left">
-              Cooking <span className="ds-control text-(--ds-text) tabular-nums">{clock(now - (startedAt ?? now))}</span>
+              {t.cooking} <span className="ds-control text-(--ds-text) tabular-nums">{clock(now - (startedAt ?? now))}</span>
               {timer && (
                 <>
                   {" "}
-                  · Step {timer.step + 1} timer{" "}
+                  · {t.stepTimer(timer.step + 1)}{" "}
                   <span className="ds-control text-(--ds-text) tabular-nums">{clock(timer.endsAt - now)}</span>
                 </>
               )}
               {!timer && rang !== null && (
                 <span role="alert" className="text-(--ds-success)">
                   {" "}
-                  · Step {rang + 1}: time’s up
+                  · {t.timesUp(rang + 1)}
                 </span>
               )}
             </p>
@@ -274,17 +241,15 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
               <div className="justify-self-start">
                 <Button variant="secondary" disabled={step === 0} onClick={() => goTo(step - 1)}>
-                  Previous
+                  {t.previous}
                 </Button>
               </div>
-              <p className="ds-label text-center text-(--ds-muted)">
-                Step {step + 1} of {recipe.steps.length}
-              </p>
+              <p className="ds-label text-center text-(--ds-muted)">{t.stepOf(step + 1, recipe.steps.length)}</p>
               <div className="justify-self-end">
                 {step < last ? (
-                  <Button onClick={() => goTo(step + 1)}>Next step</Button>
+                  <Button onClick={() => goTo(step + 1)}>{t.nextStep}</Button>
                 ) : (
-                  <Button onClick={() => stopCooking(true)}>Finish</Button>
+                  <Button onClick={() => stopCooking(true)}>{t.finish}</Button>
                 )}
               </div>
             </div>

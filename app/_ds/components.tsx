@@ -95,11 +95,11 @@ export function ButtonLink({
   );
 }
 
-export function SaveButton() {
-  const [saved, setSaved] = useState(false);
+export function FavoriteButton() {
+  const [favorite, setFavorite] = useState(false);
   return (
-    <Button variant="secondary" selected={saved} onClick={() => setSaved(!saved)}>
-      {saved ? "✓ Saved" : "Save recipe"}
+    <Button variant="secondary" selected={favorite} onClick={() => setFavorite(!favorite)}>
+      {favorite ? "♥ Favorite" : "♡ Favorite"}
     </Button>
   );
 }
@@ -440,12 +440,15 @@ export function Tabs({
 
 export function Chip({
   selected = false,
+  compact = false,
   force,
   disabled,
   onClick,
   children,
 }: {
   selected?: boolean;
+  /** A smaller chip, for secondary switches such as language. */
+  compact?: boolean;
   force?: Force;
   disabled?: boolean;
   onClick?: () => void;
@@ -458,7 +461,7 @@ export function Chip({
       data-force={force}
       disabled={disabled}
       onClick={onClick}
-      className={`ds-control inline-flex min-h-11 items-center rounded-(--ds-radius-control) border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) px-4 text-(--ds-text) transition-[background-color,color,border-color,scale] ds-hover:not-aria-pressed:bg-(--ds-soft) ds-pressed:not-aria-pressed:bg-(--ds-soft-pressed) ds-pressed:scale-95 aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected) ${focusRing} ${disabledFill}`}
+      className={`ds-control inline-flex ${compact ? "min-h-9 px-3" : "min-h-11 px-4"} items-center rounded-(--ds-radius-control) border-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface) text-(--ds-text) transition-[background-color,color,border-color,scale] ds-hover:not-aria-pressed:bg-(--ds-soft) ds-pressed:not-aria-pressed:bg-(--ds-soft-pressed) ds-pressed:scale-95 aria-pressed:border-(--ds-selected-border) aria-pressed:bg-(--ds-selected) aria-pressed:text-(--ds-on-selected) ${focusRing} ${disabledFill}`}
     >
       {children}
     </button>
@@ -515,9 +518,15 @@ export function RecipeCard({
   onOpen,
   media,
   showSummary = false,
+  meta: metaText,
+  badges,
 }: {
   recipe: Recipe;
   force?: Force;
+  /** Replaces the default "Dinner · 20 min" line, for example in another language. */
+  meta?: string;
+  /** Replaces the default "Make ahead" badge. */
+  badges?: ReactNode;
   /** Makes the card a link to the recipe's page. */
   href?: string;
   onOpen?: () => void;
@@ -547,13 +556,15 @@ export function RecipeCard({
             </button>
           )}
         </h3>
-        <p className="ds-label text-(--ds-muted)">{cardMeta(recipe)}</p>
+        <p className="ds-label text-(--ds-muted)">{metaText ?? cardMeta(recipe)}</p>
         {showSummary && <p className="ds-small pt-0.5 text-(--ds-muted)">{summary(recipe)}</p>}
-        {recipe.aheadNote && (
-          <div className="pt-1">
-            <Badge>Make ahead</Badge>
-          </div>
-        )}
+        {badges !== undefined
+          ? badges && <div className="flex flex-wrap gap-1.5 pt-1">{badges}</div>
+          : recipe.aheadNote && (
+              <div className="pt-1">
+                <Badge>Make ahead</Badge>
+              </div>
+            )}
       </div>
     </article>
   );
@@ -563,8 +574,14 @@ export function ListRows({
   recipes,
   hrefFor,
   thumb,
+  metaFor,
+  badgesFor,
 }: {
   recipes: Recipe[];
+  /** Replaces the default "Dinner · 20 min" line. */
+  metaFor?: (recipe: Recipe) => string;
+  /** Replaces the default "Make ahead" badge. */
+  badgesFor?: (recipe: Recipe) => ReactNode;
   /** Makes each row a link to that recipe's page. */
   hrefFor?: (recipe: Recipe) => string;
   /** A small photo or drawing at the start of each row. */
@@ -584,14 +601,16 @@ export function ListRows({
             )}
             <span className="flex min-w-0 flex-1 flex-col gap-0.5">
               <span className="ds-title text-(--ds-text)">{recipe.name}</span>
-              <span className="ds-label text-(--ds-muted)">
-                {recipe.meal === "breakfast" ? "Breakfast" : "Dinner"} · {recipe.minutes} min
-              </span>
+              <span className="ds-label text-(--ds-muted)">{metaFor ? metaFor(recipe) : cardMeta(recipe)}</span>
             </span>
-            {recipe.aheadNote && (
-              <span className="hidden sm:inline-flex">
-                <Badge>Make ahead</Badge>
-              </span>
+            {badgesFor ? (
+              <span className="hidden gap-1.5 sm:inline-flex">{badgesFor(recipe)}</span>
+            ) : (
+              recipe.aheadNote && (
+                <span className="hidden sm:inline-flex">
+                  <Badge>Make ahead</Badge>
+                </span>
+              )
             )}
             <svg viewBox="0 0 16 16" aria-hidden className="size-4 shrink-0 text-(--ds-muted)" fill="none" stroke="currentColor" strokeWidth="1.75">
               <path d="M6 3l5 5-5 5" />
@@ -704,8 +723,10 @@ export function RecipeModal({ recipe }: { recipe: Recipe }) {
 export function IngredientChecklist({
   recipe,
   title = "Ingredients",
+  readyLabel = (done, total) => `${done} of ${total} ready`,
 }: {
   recipe: Recipe;
+  readyLabel?: (done: number, total: number) => string;
   /** null hides the heading, for example inside a tab that already names it. */
   title?: ReactNode | null;
 }) {
@@ -716,7 +737,7 @@ export function IngredientChecklist({
       <div className="flex items-baseline justify-between gap-4">
         {title !== null && <h3 className="ds-title text-(--ds-text)">{title}</h3>}
         <p className="ds-label text-(--ds-muted)" aria-live="polite">
-          {ready} of {recipe.ingredients.length} ready
+          {readyLabel(ready, recipe.ingredients.length)}
         </p>
       </div>
       <ul>
@@ -746,8 +767,12 @@ export function StepList({
   onCurrentChange,
   controls = true,
   action,
+  progressLabel = (step, total) => (step === null ? `${total} steps` : `Step ${step + 1} of ${total}`),
+  doneLabel = "Done: ",
 }: {
   recipe: Recipe;
+  progressLabel?: (current: number | null, total: number) => string;
+  doneLabel?: string;
   /** null hides the heading, for example inside a tab that already names it. */
   title?: ReactNode | null;
   /** Pass to control it from outside; null means no step is current yet. */
@@ -776,7 +801,7 @@ export function StepList({
       <div className="flex items-baseline justify-between gap-4">
         {title !== null && <h3 className="ds-title text-(--ds-text)">{title}</h3>}
         <p className="ds-label text-(--ds-muted)" aria-live="polite">
-          {current === null ? `${recipe.steps.length} steps` : `Step ${current + 1} of ${recipe.steps.length}`}
+          {progressLabel(current, recipe.steps.length)}
         </p>
       </div>
       <ol className="flex flex-col gap-1">
@@ -808,7 +833,7 @@ export function StepList({
                   {state === "done" ? "✓" : i + 1}
                 </span>
                 <span className={`ds-body ${state === "done" ? "text-(--ds-muted)" : "text-(--ds-text)"}`}>
-                  <span className="sr-only">{state === "done" ? "Done: " : ""}</span>
+                  <span className="sr-only">{state === "done" ? doneLabel : ""}</span>
                   {step}
                 </span>
               </button>

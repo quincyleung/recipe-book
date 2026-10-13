@@ -598,7 +598,7 @@ const palettes = {
 };
 
 /** A drawing of the dish. `fill` crops it to cover its container instead of keeping 4:3. */
-export function DishArt({ recipe, fill = false }: { recipe: Recipe; fill?: boolean }) {
+export function DishArt({ recipe, fill = false, label }: { recipe: Recipe; fill?: boolean; label?: string }) {
   // Hidden pages stay in the DOM, so every drawing needs its own ids.
   const uid = `art${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const u = (name: string) => `${uid}-${name}`;
@@ -610,7 +610,7 @@ export function DishArt({ recipe, fill = false }: { recipe: Recipe; fill?: boole
       viewBox="0 0 240 180"
       preserveAspectRatio={fill ? "xMidYMid slice" : undefined}
       role="img"
-      aria-label={`Drawing of ${recipe.name}`}
+      aria-label={label ?? `Drawing of ${recipe.name}`}
       className={`block w-full ${fill ? "h-full" : "h-auto"}`}
     >
       <defs>

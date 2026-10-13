@@ -7,12 +7,12 @@ import {
   ChipGroup,
   DetailPanel,
   EmptyState,
+  FavoriteButton,
   IngredientChecklist,
   ListRows,
   Radio,
   RecipeCard,
   RecipeModal,
-  SaveButton,
   Select,
   Spinner,
   StepList,
@@ -323,7 +323,7 @@ export function DesignSystem({
             <Group title="Buttons and link">
               <div className="flex flex-wrap items-center gap-4">
                 <Button>Start cooking</Button>
-                <SaveButton />
+                <FavoriteButton />
                 <TextLink href={`#${style.slug}-section-4`}>See all recipes →</TextLink>
               </div>
             </Group>
@@ -413,7 +413,7 @@ export function DesignSystem({
                 selected={state === "Selected"}
                 disabled={state === "Disabled"}
               >
-                {state === "Selected" ? "✓ Saved" : "Save"}
+                {state === "Selected" ? "♥ Favorite" : "♡ Favorite"}
               </Button>
             )}
           />
@@ -508,8 +508,8 @@ export function DesignSystem({
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
               </span>
-              <p className="ds-title text-(--ds-success)">Saved to your book</p>
-              <p className="ds-body text-(--ds-muted)">Honey Garlic Salmon is in Dinner.</p>
+              <p className="ds-title text-(--ds-success)">Added to favorites</p>
+              <p className="ds-body text-(--ds-muted)">Honey Garlic Salmon is in your favorites.</p>
             </StateCard>
           </div>
         </Section>
