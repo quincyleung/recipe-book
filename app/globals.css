@@ -99,6 +99,16 @@ body {
   line-height: var(--ds-body-leading);
 }
 
+@utility ds-small {
+  font-family: var(--ds-small-font);
+  font-size: var(--ds-small-size);
+  font-weight: var(--ds-small-weight);
+  font-style: var(--ds-small-style);
+  text-transform: var(--ds-small-case);
+  letter-spacing: var(--ds-small-tracking);
+  line-height: var(--ds-small-leading);
+}
+
 @utility ds-label {
   font-family: var(--ds-label-font);
   font-size: var(--ds-label-size);

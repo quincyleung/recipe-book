@@ -186,3 +186,24 @@
 **Made:** Removed the chopsticks, fork, and spoon, and centered each plate (or the oats jar) in its frame. The plate, rim band, shadow, and mosaic tablecloth stay.
 
 **Pushed back:** I rejected the utensils the agent added; the drawings should focus on the food.
+
+## 2026-10-13: Type hierarchy, centered cooking clock, hub button
+
+**Asked:**
+- Make the text-size hierarchy more apparent; the ingredients on each card look as big as the title.
+- On a narrow window, center the cooking time above the step count.
+- Make the "back to hub" link a button in the design system's style.
+
+**Made:**
+- **Type scale:** added a Small role (14px) to all three design systems, shown in each type roles section. In Old Hong Kong, the title went from 20 to 22px and body from 17 to 16px. Cards now step down from title (22px Oswald) to meta (13px Oswald caps) to ingredients (14px muted, in the Small role).
+- **Cooking bar:** on phones and tablets the bar's top line is just the cooking clock, plus the step timer when one is running, centered exactly above "Step 2 of 5". The navigation row is a three-column grid so the step count sits at the true center. The "Start 4:00 timer" and "Cancel timer" buttons moved out of the bar and into the current step, under the instruction that names the time. "Time's up" shows on the clock line and clears on the next step. On laptops the bar stays one row.
+- **Hub button:** "← Hub" on the recipes page is now the design system's button (`ButtonLink`), matching "← All recipes".
+
+**Verified in Chrome:**
+- The clock and step count share the screen's center line at 390px and 640px, with and without a timer.
+- The timer button appears under step 2 ("for 4 minutes"); a 20-second timer ran out and its alert cleared on the next step.
+- No button overlaps or sideways scroll.
+- "Next step" is the only red button.
+- No console errors.
+
+**Pushed back:** I asked for clearer type hierarchy, a centered clock, and a button-style hub link.

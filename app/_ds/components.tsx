@@ -525,7 +525,7 @@ export function RecipeCard({
           )}
         </h3>
         <p className="ds-label text-(--ds-muted)">{meta(recipe)}</p>
-        {showSummary && <p className="ds-body text-(--ds-muted)">{summary(recipe)}</p>}
+        {showSummary && <p className="ds-small pt-0.5 text-(--ds-muted)">{summary(recipe)}</p>}
         {recipe.aheadNote && (
           <div className="pt-1">
             <Badge>Make ahead</Badge>
@@ -722,6 +722,7 @@ export function StepList({
   current: controlled,
   onCurrentChange,
   controls = true,
+  action,
 }: {
   recipe: Recipe;
   /** null hides the heading, for example inside a tab that already names it. */
@@ -731,6 +732,8 @@ export function StepList({
   onCurrentChange?: (step: number) => void;
   /** Show Previous and Next under the list. */
   controls?: boolean;
+  /** Extra controls under a step, such as a timer for the current one. */
+  action?: (index: number, state: "done" | "current" | "next") => ReactNode;
 }) {
   const [own, setOwn] = useState(0);
   const current = controlled === undefined ? own : controlled;
@@ -786,6 +789,7 @@ export function StepList({
                   {step}
                 </span>
               </button>
+              {action?.(i, state) && <div className="pt-1 pb-2 pl-13">{action(i, state)}</div>}
             </li>
           );
         })}

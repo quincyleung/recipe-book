@@ -62,11 +62,16 @@ const roles: { key: keyof Colors; name: string; use: string; ratioOn?: keyof Col
   { key: "success", name: "Success", use: "Success text and icon", ratioOn: "surface" },
 ];
 
-const roleSamples: { role: "display" | "heading" | "title" | "body" | "label" | "control"; name: string; sample: string }[] = [
+const roleSamples: {
+  role: "display" | "heading" | "title" | "body" | "small" | "label" | "control";
+  name: string;
+  sample: string;
+}[] = [
   { role: "display", name: "Display", sample: "Honey Garlic Salmon" },
   { role: "heading", name: "Heading", sample: "Ingredients" },
   { role: "title", name: "Title", sample: "Beef Enoki Rolls" },
   { role: "body", name: "Body", sample: "Sear skin side down over medium-high for four minutes. Flip and cook two more." },
+  { role: "small", name: "Small", sample: "Salmon, garlic, honey + 3 more" },
   { role: "label", name: "Label", sample: "Dinner · 20 min · Serves 2" },
   { role: "control", name: "Control", sample: "Start cooking" },
 ];
@@ -76,6 +81,7 @@ const roleClass = {
   heading: "ds-heading",
   title: "ds-title",
   body: "ds-body",
+  small: "ds-small",
   label: "ds-label",
   control: "ds-control",
 };

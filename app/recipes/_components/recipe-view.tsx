@@ -59,7 +59,6 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
   const [rang, setRang] = useState<number | null>(null);
   const [finishedIn, setFinishedIn] = useState<number | null>(null);
   const last = recipe.steps.length - 1;
-  const seconds = step === null ? null : stepSeconds(recipe.steps[step]);
 
   useEffect(() => {
     if (startedAt === null && timer === null) return;
@@ -107,6 +106,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
       setNow(t);
     }
     setFinishedIn(null);
+    setRang(null);
     setStep(next);
     setTab(STEPS_TAB);
   }
@@ -119,11 +119,10 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
     setRang(null);
   }
 
+  // Timers are only offered while cooking, when the clock is already ticking, so start from the latest tick.
   function startTimer(forStep: number, secs: number) {
-    const t = Date.now();
-    setNow(t);
     setRang(null);
-    setTimer({ step: forStep, endsAt: t + secs * 1000 });
+    setTimer({ step: forStep, endsAt: now + secs * 1000 });
   }
 
   return (
@@ -210,7 +209,27 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
             {
               label: <Bilingual zh="做法" en="Steps" />,
               content: (
-                <StepList recipe={recipe} title={null} current={step} onCurrentChange={goTo} controls={false} />
+                <StepList
+                  recipe={recipe}
+                  title={null}
+                  current={step}
+                  onCurrentChange={goTo}
+                  controls={false}
+                  action={(i, state) => {
+                    // A countdown for the current step, if it says how long ("4 minutes").
+                    const secs = stepSeconds(recipe.steps[i]);
+                    if (secs === null || state !== "current") return null;
+                    return timer?.step === i ? (
+                      <Button variant="secondary" onClick={() => setTimer(null)}>
+                        Cancel timer
+                      </Button>
+                    ) : (
+                      <Button variant="secondary" onClick={() => startTimer(i, secs)}>
+                        Start {clock(secs * 1000)} timer
+                      </Button>
+                    );
+                  }}
+                />
               ),
             },
             {
@@ -234,50 +253,40 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
 
       {step !== null && (
         <div className="sticky bottom-0 z-10 border-t-(length:--ds-border-width) border-(--ds-control) bg-(--ds-surface)">
-          <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-8">
-            <div className="flex min-h-11 basis-full items-center justify-between gap-3 md:flex-1 md:basis-auto md:justify-start">
-              <p className="ds-label text-(--ds-muted)">
-                Cooking <span className="ds-control text-(--ds-text) tabular-nums">{clock(now - (startedAt ?? now))}</span>
-              </p>
-              {timer ? (
-                <div className="flex items-center gap-3">
-                  <p className="ds-label text-(--ds-muted)">
-                    Step {timer.step + 1} timer{" "}
-                    <span className="ds-title text-(--ds-text) tabular-nums">{clock(timer.endsAt - now)}</span>
-                  </p>
-                  <Button variant="secondary" onClick={() => setTimer(null)}>
-                    Cancel
-                  </Button>
-                </div>
-              ) : rang !== null ? (
-                <div className="flex items-center gap-3">
-                  <p role="alert" className="ds-title text-(--ds-success)">
-                    Step {rang + 1}: time’s up
-                  </p>
-                  <Button variant="secondary" onClick={() => setRang(null)}>
-                    OK
-                  </Button>
-                </div>
-              ) : (
-                seconds !== null && (
-                  <Button variant="secondary" onClick={() => startTimer(step, seconds)}>
-                    Start {clock(seconds * 1000)} timer
-                  </Button>
-                )
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-8 md:flex-row md:items-center md:gap-6">
+            <p className="ds-label text-center text-(--ds-muted) md:flex-1 md:text-left">
+              Cooking <span className="ds-control text-(--ds-text) tabular-nums">{clock(now - (startedAt ?? now))}</span>
+              {timer && (
+                <>
+                  {" "}
+                  · Step {timer.step + 1} timer{" "}
+                  <span className="ds-control text-(--ds-text) tabular-nums">{clock(timer.endsAt - now)}</span>
+                </>
               )}
-            </div>
-            <div className="flex basis-full items-center gap-3 md:basis-auto">
-              <Button variant="secondary" disabled={step === 0} onClick={() => goTo(step - 1)}>
-                Previous
-              </Button>
-              <p className="ds-label flex-1 text-center text-(--ds-muted) md:px-2">
+              {!timer && rang !== null && (
+                <span role="alert" className="text-(--ds-success)">
+                  {" "}
+                  · Step {rang + 1}: time’s up
+                </span>
+              )}
+            </p>
+            {/* Three columns keep the step count exactly centered, under the clock. */}
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <div className="justify-self-start">
+                <Button variant="secondary" disabled={step === 0} onClick={() => goTo(step - 1)}>
+                  Previous
+                </Button>
+              </div>
+              <p className="ds-label text-center text-(--ds-muted)">
                 Step {step + 1} of {recipe.steps.length}
               </p>
-              {step < last ? (
-                <Button onClick={() => goTo(step + 1)}>Next step</Button>
-              ) : (
-                <Button onClick={() => stopCooking(true)}>Finish</Button>
-              )}
+              <div className="justify-self-end">
+                {step < last ? (
+                  <Button onClick={() => goTo(step + 1)}>Next step</Button>
+                ) : (
+                  <Button onClick={() => stopCooking(true)}>Finish</Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -69,7 +69,7 @@ export type Shape = {
 
 export type Theme = {
   colors: Colors;
-  type: Record<"display" | "heading" | "title" | "body" | "label" | "control", TypeRole>;
+  type: Record<"display" | "heading" | "title" | "body" | "small" | "label" | "control", TypeRole>;
   shape: Shape;
   /** CSS background used where a recipe photo would go. */
   art: string;
@@ -120,6 +120,7 @@ export const themes: Record<Style["slug"], Theme> = {
       heading: { family: "Marcellus", font: "var(--nf-marcellus)", size: "1.75rem", px: "28px", weight: 400, leading: 1.2 },
       title: { family: "Marcellus", font: "var(--nf-marcellus)", size: "1.375rem", px: "22px", weight: 400, leading: 1.2 },
       body: { family: "Manrope", font: "var(--nf-manrope)", size: "1.0625rem", px: "17px", weight: 400, leading: 1.6 },
+      small: { family: "Manrope", font: "var(--nf-manrope)", size: "0.875rem", px: "14px", weight: 400, leading: 1.5 },
       label: { family: "Manrope", font: "var(--nf-manrope)", size: "0.75rem", px: "12px", weight: 700, leading: 1.4, uppercase: true, tracking: "0.12em" },
       control: { family: "Manrope", font: "var(--nf-manrope)", size: "0.9375rem", px: "15px", weight: 600, leading: 1.2 },
     },
@@ -173,6 +174,7 @@ export const themes: Record<Style["slug"], Theme> = {
       heading: { family: "Cormorant Garamond", font: "var(--nf-cormorant)", size: "2rem", px: "32px", weight: 600, leading: 1.15 },
       title: { family: "Cormorant Garamond", font: "var(--nf-cormorant)", size: "1.5rem", px: "24px", weight: 600, leading: 1.15 },
       body: { family: "Jost", font: "var(--nf-jost)", size: "1.0625rem", px: "17px", weight: 400, leading: 1.65 },
+      small: { family: "Jost", font: "var(--nf-jost)", size: "0.875rem", px: "14px", weight: 400, leading: 1.5 },
       label: { family: "Jost", font: "var(--nf-jost)", size: "0.75rem", px: "12px", weight: 500, leading: 1.4, uppercase: true, tracking: "0.2em" },
       control: { family: "Jost", font: "var(--nf-jost)", size: "0.8125rem", px: "13px", weight: 500, leading: 1.2, uppercase: true, tracking: "0.16em" },
     },
@@ -245,14 +247,15 @@ export const themes: Record<Style["slug"], Theme> = {
       title: {
         family: "Oswald + Noto Serif TC",
         font: "var(--nf-oswald), var(--nf-noto-serif-tc)",
-        size: "1.25rem",
-        px: "20px",
+        size: "1.375rem",
+        px: "22px",
         weight: 600,
         leading: 1.2,
         uppercase: true,
         tracking: "0.02em",
       },
-      body: { family: "Noto Serif TC", font: "var(--nf-noto-serif-tc)", size: "1.0625rem", px: "17px", weight: 400, leading: 1.7 },
+      body: { family: "Noto Serif TC", font: "var(--nf-noto-serif-tc)", size: "1rem", px: "16px", weight: 400, leading: 1.7 },
+      small: { family: "Noto Serif TC", font: "var(--nf-noto-serif-tc)", size: "0.875rem", px: "14px", weight: 400, leading: 1.55 },
       label: { family: "Oswald", font: "var(--nf-oswald)", size: "0.8125rem", px: "13px", weight: 500, leading: 1.4, uppercase: true, tracking: "0.08em" },
       control: { family: "Oswald", font: "var(--nf-oswald)", size: "1rem", px: "16px", weight: 500, leading: 1.2, uppercase: true, tracking: "0.06em" },
     },

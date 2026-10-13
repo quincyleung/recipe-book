@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TextLink } from "@/app/_ds/components";
+import { ButtonLink } from "@/app/_ds/components";
 import { themeVars, themes } from "@/app/_ds/themes";
 import { fontVariables } from "@/app/_fonts";
 import { recipes } from "@/content/recipes";
@@ -22,7 +22,7 @@ export default function RecipesPage() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
         <header className="flex flex-col gap-4">
           <nav>
-            <TextLink href="/">← Hub</TextLink>
+            <ButtonLink href="/">← Hub</ButtonLink>
           </nav>
           <div className="flex flex-col gap-2">
             <h1 className="ds-display">食譜 Recipe Book</h1>
