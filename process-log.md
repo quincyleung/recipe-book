@@ -133,3 +133,13 @@
 - **Notes:** the agent drafted two practical notes per recipe from its steps; I need to edit them.
 - **Design system updates:** select, radio, toggle, and tabs can now be driven by the page; cards and list rows can link to pages and show a drawing; list rows lead with the name in the title role; the button gained an "expanded" state for the Filters toggle; `TextLink` uses Next's `Link`. Removed a global `:has(dialog[open])` scroll lock, which Next's guide warns can leak from pages it keeps hidden; the design system's demo modal now closes when its page is hidden.
 - On phones, the recipe tabs share the width equally with Chinese above English, because one line didn't fit at 390px.
+
+**Verified in Chrome:**
+- **Filters:** each filter and combinations of them (Fish gives 2 recipes, plus Beef gives 4, plus Ready tonight gives 3; Make ahead only gives oats and miso cod), plus search, sort, and both views.
+- **Recipe pages:** opening one as a real page, the tabs (including arrow keys), and cooking through to Finish.
+- **Back button:** returning to the list keeps the Dinner filter and List view.
+- **Accent:** none on the list; on a recipe page only "Start cooking", then only "Next step" while cooking.
+- **No console errors.**
+- **Button placement:** at 390, 480, 640, 768, 900, 1024, 1280, and 1440px, no button text is clipped or wrapped, no button is off-screen or overlapping another, and the page never scrolls sideways. Resizing live from laptop to phone and back while cooking keeps the current step and the bar.
+
+**Fixed after testing:** on recipes shorter than the screen, the cooking bar sat just under the content instead of on the bottom edge. The page now fills the screen height, so the bar always sits on the bottom edge.

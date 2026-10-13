@@ -65,7 +65,8 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
+      {/* flex-1 fills short pages so the cooking bar always sits on the bottom edge. */}
+      <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-6 sm:px-8 sm:py-10">
         <div className="flex items-center justify-between gap-4">
           <TextLink href="/recipes">← All recipes</TextLink>
           <SaveButton />

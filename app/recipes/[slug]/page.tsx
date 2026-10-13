@@ -24,7 +24,7 @@ export default async function RecipePage({ params }: PageProps<"/recipes/[slug]"
 
   return (
     <main
-      className={`${fontVariables[style]} ds-body flex-1 bg-(--ds-bg) text-(--ds-text)`}
+      className={`${fontVariables[style]} ds-body flex flex-1 flex-col bg-(--ds-bg) text-(--ds-text)`}
       style={themeVars(themes[style])}
     >
       <RecipeView recipe={recipe} />
