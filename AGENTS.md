@@ -32,7 +32,13 @@ Me, cooking on weeknights with my phone on the counter. I want the ingredients a
 
 ## Styles
 
-`greek`, `french`, `old-hong-kong`. Photos are in `public/mood/<style>/`. Convert any `.heic` to `.jpg`.
+| Name | Route slug | Photos |
+| --- | --- | --- |
+| Greek Summer | `greek-summer` | `public/mood/Greek Summer/` |
+| Parisian Morning | `parisian-morning` | `public/mood/Parisian Morning/` |
+| Old Hong Kong | `old-hong-kong` | `public/mood/Old Hong Kong/` |
+
+The folder for each style is set in `content/styles.ts`. Folder names have spaces, so URL-encode the paths (for example with `encodeURIComponent`). Convert any `.heic` to `.jpg`.
 
 ## Workflow
 
