@@ -42,5 +42,5 @@ The folder for each style is set in `content/styles.ts`. Folder names have space
 
 ## Workflow
 
-- Commit after each step with a clear message.
+- Commit after each step with a clear message, then push to GitHub (`origin main`).
 - Append to `process-log.md` after each step: what I asked for, what you made, and where I pushed back.
